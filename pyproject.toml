@@ -6,6 +6,7 @@ authors = ["ipotemkin <91094458+ipotemkin@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+Django = "^4.0.2"
 
 [tool.poetry.dev-dependencies]
 
