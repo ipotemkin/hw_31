@@ -1,0 +1,37 @@
+[
+	{
+		"model": "ads.cat",
+		"pk": 1,
+		"fields": {
+			"name": "Котики"
+		}
+	},
+	{
+		"model": "ads.cat",
+		"pk": 2,
+		"fields": {
+			"name": "Песики"
+		}
+	},
+	{
+		"model": "ads.cat",
+		"pk": 3,
+		"fields": {
+			"name": "Книги"
+		}
+	},
+	{
+		"model": "ads.cat",
+		"pk": 4,
+		"fields": {
+			"name": "Растения"
+		}
+	},
+	{
+		"model": "ads.cat",
+		"pk": 5,
+		"fields": {
+			"name": "Мебель и интерьер"
+		}
+	}
+]

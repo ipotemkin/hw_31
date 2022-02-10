@@ -3,8 +3,6 @@ import sys
 import csv
 import json
 from typing import Callable
-# TODO try using PyDantic to parse csv
-# from pydantic import BaseModel
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -33,13 +31,16 @@ def parse_ads(data: list[dict]) -> list[dict]:
     try:
         return [
             {
-                "id": int(item["Id"]),
-                "name": item["name"],
-                "author": item["author"],
-                "price": int(item["price"]),
-                "description": item["description"],
-                "address": item["address"],
-                "is_published": True if (item["is_published"]) == 'TRUE' else False
+                "model": "ads.ads",
+                "pk": int(item["Id"]),
+                "fields": {
+                    "name": item["name"],
+                    "author": item["author"],
+                    "price": int(item["price"]),
+                    "description": item["description"],
+                    "address": item["address"],
+                    "is_published": True if (item["is_published"]) == 'TRUE' else False
+                }
             }
             for item in data
         ]
@@ -55,8 +56,11 @@ def parse_category(data: list[dict]) -> list[dict]:
     try:
         return [
             {
-                "id": int(item["id"]),
-                "name": item["name"],
+                "model": "ads.cat",
+                "pk": int(item["id"]),
+                "fields": {
+                    "name": item["name"],
+                }
             }
             for item in data
         ]
@@ -80,7 +84,6 @@ def csv2json(filename: str, func: Callable) -> None:
 
 
 if __name__ == "__main__":
-    pass
     # writing from CSVs to JSONs
     csv2json("ads.csv", parse_ads)
     csv2json("categories.csv", parse_category)
