@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import DetailView
 from django.views.decorators.csrf import csrf_exempt
 
-from ads.models import Ads, Cat
+from .models import Ad, Cat
 
 
 class AdModel(BaseModel):
@@ -40,18 +40,18 @@ class AdView(View):
     @staticmethod
     def get(request):
         return JsonResponse(
-            [AdModel.from_orm(ad).dict() for ad in Ads.objects.all()],
+            [AdModel.from_orm(ad).dict() for ad in Ad.objects.all()],
             safe=False,
         )
 
     @staticmethod
     def post(request):
-        ad = Ads.objects.create(**AdModel.parse_raw(request.body).dict())
+        ad = Ad.objects.create(**AdModel.parse_raw(request.body).dict())
         return JsonResponse(AdModel.from_orm(ad).dict())
 
 
 class AdDetailView(DetailView):
-    model = Ads
+    model = Ad
 
     def get(self, request, *args, **kwargs):
         ad = self.get_object()
