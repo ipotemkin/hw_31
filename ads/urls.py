@@ -7,4 +7,7 @@ urlpatterns = [
     path("cat/", views.CatView.as_view(), name="cats_all"),
     path("ad/<int:pk>/", views.AdDetailView.as_view(), name="ad"),
     path("cat/<int:pk>/", views.CatDetailView.as_view(), name="cat"),
+    path("ad/http-json/", views.AdHTTPJsonView.as_view(), name="ad_http_json"),
+    path("ad/http-json/<int:pk>/", views.AdHTTPJsonDetailView.as_view(), name="ad_http_json_pk"),
+    path("ad/http/", views.AdHTTPView.as_view(), name="ad_http"),
 ]
