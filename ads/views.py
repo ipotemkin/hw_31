@@ -41,7 +41,7 @@ class AdView(View):
     def get(request):
         return JsonResponse(
             [AdModel.from_orm(ad).dict() for ad in Ads.objects.all()],
-            safe=False
+            safe=False,
         )
 
     @staticmethod
@@ -69,8 +69,8 @@ class CatView(View):
 
     @staticmethod
     def post(request):
-        ad = Cat.objects.create(**CatModel.parse_raw(request.body).dict())
-        return JsonResponse(CatModel.from_orm(ad).dict())
+        cat = Cat.objects.create(**CatModel.parse_raw(request.body).dict())
+        return JsonResponse(CatModel.from_orm(cat).dict())
 
 
 class CatDetailView(DetailView):
