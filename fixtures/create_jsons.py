@@ -31,7 +31,7 @@ def parse_ads(data: list[dict]) -> list[dict]:
     try:
         return [
             {
-                "model": "ads.ads",
+                "model": "ads.ad",
                 "pk": int(item["Id"]),
                 "fields": {
                     "name": item["name"],
