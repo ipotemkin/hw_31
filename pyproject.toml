@@ -8,6 +8,7 @@ authors = ["ipotemkin <91094458+ipotemkin@users.noreply.github.com>"]
 python = "^3.9"
 Django = "^4.0.2"
 pydantic = "^1.9.0"
+SQLAlchemy = "^1.4.31"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"

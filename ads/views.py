@@ -37,9 +37,10 @@ class AdModel(BaseModel):
     name: str
     author: str
     price: int
-    description: str
+    description: Optional[str]
     address: str
     is_published: bool
+    category_id: int = Field(alias="category_id_id")
 
     class Config:
         orm_mode = True
@@ -69,6 +70,7 @@ def index(request):  # noqa
 class AdView(View):
     @staticmethod
     def get(request):  # noqa
+        print(ADO.all())
         return pretty_json_response([AdModel.from_orm(ad).dict() for ad in ADO.all()])
 
     @staticmethod
@@ -89,14 +91,8 @@ class AdDetailView(DetailView):
 class AdHTTPJsonView(View):
     @staticmethod
     def get(request) -> HttpResponse:
-        res_obj = (
-            ADO.filter(name=name)
-            if (name := request.GET.get("name", None))
-            else ADO.all()
-        )
-        s_dicts = [
-            AdModel.from_orm(ad).dict(include={"pk", "name", "price"}) for ad in res_obj
-        ]
+        res_obj = ADO.filter(name__iregex=name) if (name := request.GET.get("name", None)) else ADO.all()
+        s_dicts = [AdModel.from_orm(ad).dict(include={"pk", "name", "price"}) for ad in res_obj]
 
         # an attempt to serialize pydantic models
         # s_dicts = [{"item": AdModel.from_orm(ad)} for ad in res_obj]
@@ -111,7 +107,7 @@ class AdHTTPView(View):
     @staticmethod
     def get(request) -> HttpResponse:
         res_obj = (
-            ADO.filter(name__icontains=name)
+            ADO.filter(name__iregex=name)
             if (name := request.GET.get("name", None))
             else ADO.all()
         )
