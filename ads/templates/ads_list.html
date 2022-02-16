@@ -1,19 +1,29 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Объявления</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
-<body>
-    <h2>Объявления:</h2><hr>
+<body class="board">
+<!--    <h2>Объявления:</h2><hr>-->
     {% for ad in ads %}
-    <div>
-        <h3>{{ ad.name }}: {{ ad.price }}</h3>
-<!--        <p>Цена: {{ ad.price }}</p>-->
-        <p>Продавец: {{ ad.author }}</p>
-        <p>Описание: {{ ad.description }}</p><hr>
-    </div>
+    <a href="{{ ad.pk }}/">
+        <div class="card">
+            <h3>{{ ad.name }}</h3>
+            <h3>Цена: {{ ad.price }} руб.</h3>
+            <p><b>Продавец:</b> {{ ad.author }}</p>
+            <p><b>Описание:</b><br>{{ ad.description | truncatechars:200 }}</p>
+        </div>
+    </a>
     {% endfor %}
+<!--    <script>-->
+<!--        function cardOnClick() {-->
+<!--            console.log("test");-->
+<!--            location.href = '/ads/ad/';-->
+<!--        }-->
+<!--    </script>-->
 </body>
 </html>

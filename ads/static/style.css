@@ -1,0 +1,29 @@
+body {
+    font-family: sans-serif;
+    background-color: lightgrey;
+}
+
+.board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.card {
+    padding: 20px;
+    width: 300px;
+    height: 280px;
+    border-radius: 8px;
+    background-color: white;
+    transition: 0.6s;
+}
+
+.card:hover {
+    transform: scale(1.03);
+    background-color: lightpink;
+}

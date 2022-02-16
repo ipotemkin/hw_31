@@ -70,7 +70,6 @@ def index(request):  # noqa
 class AdView(View):
     @staticmethod
     def get(request):  # noqa
-        print(ADO.all())
         return pretty_json_response([AdModel.from_orm(ad).dict() for ad in ADO.all()])
 
     @staticmethod
@@ -106,11 +105,7 @@ class AdHTTPJsonView(View):
 class AdHTTPView(View):
     @staticmethod
     def get(request) -> HttpResponse:
-        res_obj = (
-            ADO.filter(name__iregex=name)
-            if (name := request.GET.get("name", None))
-            else ADO.all()
-        )
+        res_obj = ADO.filter(name__iregex=name) if (name := request.GET.get("name", None)) else ADO.all()
         return render(request, "ads_list.html", {"ads": res_obj})
 
 
