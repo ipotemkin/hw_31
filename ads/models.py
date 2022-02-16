@@ -15,7 +15,7 @@ class Ad(models.Model):
     class Meta:
         verbose_name_plural = "Объявления"
         verbose_name = "Объявление"
-        ordering = ["pk"]
+        ordering = ["-price"]
 
     def __str__(self):
         return self.name
