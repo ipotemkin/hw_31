@@ -1,5 +1,3 @@
-from typing import Optional, Union
-from pydantic import BaseModel, Field
 import json
 
 from django.http import JsonResponse, HttpResponse
@@ -9,57 +7,13 @@ from django.views.generic import DetailView
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 
-from .models import Ad, Cat
+from .models import Ad, Cat, AdModel, CatModel
 
+from .utils import smart_json_response
 
 # shortcuts
 ADO = Ad.objects  # noqa
 CATO = Cat.objects  # noqa
-
-
-def pretty_json_response(json_data: Union[dict, list[dict]]) -> JsonResponse:
-    """
-    a shortcut to JsonResponse with json dumps parameters
-    """
-
-    return JsonResponse(
-        json_data,
-        safe=False,
-        json_dumps_params={
-            "ensure_ascii": False,
-            "indent": 2,
-        },  # чтобы вывести кириллицу в браузере + отступы
-    )
-
-
-class AdModel(BaseModel):
-    pk: Optional[int] = Field(alias="id")
-    name: str
-    author: str
-    price: int
-    description: Optional[str]
-    address: str
-    is_published: bool
-    category_id: int = Field(alias="category_id_id")
-
-    class Config:
-        orm_mode = True
-
-
-# an attempt to serialize pydantic models
-# class AdsModel(BaseModel):
-#     item: list[AdModel]
-#
-#     class Config:
-#         orm_mode = True
-
-
-class CatModel(BaseModel):
-    pk: Optional[int] = Field(alias="id")
-    name: str
-
-    class Config:
-        orm_mode = True
 
 
 def index(request):  # noqa
@@ -70,20 +24,19 @@ def index(request):  # noqa
 class AdView(View):
     @staticmethod
     def get(request):  # noqa
-        return pretty_json_response([AdModel.from_orm(ad).dict() for ad in ADO.all()])
+        return smart_json_response(AdModel, ADO.all())
 
     @staticmethod
     def post(request):
         ad = ADO.create(**AdModel.parse_raw(request.body).dict())
-        return pretty_json_response(AdModel.from_orm(ad).dict())
+        return smart_json_response(AdModel, ad)
 
 
 class AdDetailView(DetailView):
     model = Ad
 
     def get(self, request, *args, **kwargs) -> JsonResponse:
-        ad = self.get_object()
-        return pretty_json_response(AdModel.from_orm(ad).dict())
+        return smart_json_response(AdModel, self.get_object())
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -125,19 +78,16 @@ class AdHTTPJsonDetailView(DetailView):
 class CatView(View):
     @staticmethod
     def get(request) -> JsonResponse:  # noqa
-        return pretty_json_response(
-            [CatModel.from_orm(cat).dict() for cat in CATO.all()]
-        )
+        return smart_json_response(CatModel, CATO.all())
 
     @staticmethod
     def post(request) -> JsonResponse:
         cat = CATO.create(**CatModel.parse_raw(request.body).dict())
-        return pretty_json_response(CatModel.from_orm(cat).dict())
+        return smart_json_response(CatModel, cat)
 
 
 class CatDetailView(DetailView):
     model = Cat
 
     def get(self, request, *args, **kwargs) -> JsonResponse:
-        cat = self.get_object()
-        return pretty_json_response(CatModel.from_orm(cat).dict())
+        return smart_json_response(CatModel, self.get_object())

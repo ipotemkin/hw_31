@@ -1,3 +1,5 @@
+from typing import Optional
+from pydantic import BaseModel, Field
 from django.db import models
 
 
@@ -15,6 +17,9 @@ class Ad(models.Model):
         verbose_name = "Объявление"
         ordering = ["pk"]
 
+    def __str__(self):
+        return self.name
+
 
 class Cat(models.Model):
     name = models.CharField(max_length=120, verbose_name="Категория")
@@ -26,3 +31,41 @@ class Cat(models.Model):
         verbose_name_plural = "Категории"
         verbose_name = "Категория"
         ordering = ["name"]
+
+
+class User(models.Model):
+    pass
+
+
+class Location(models.Model):
+    pass
+
+
+class AdModel(BaseModel):
+    pk: Optional[int] = Field(alias="id")
+    name: str
+    author: str
+    price: int
+    description: Optional[str]
+    address: str
+    is_published: bool
+    category_id: int = Field(alias="category_id_id")
+
+    class Config:
+        orm_mode = True
+
+
+# an attempt to serialize pydantic models
+# class AdsModel(BaseModel):
+#     item: list[AdModel]
+#
+#     class Config:
+#         orm_mode = True
+
+
+class CatModel(BaseModel):
+    pk: Optional[int] = Field(alias="id")
+    name: str
+
+    class Config:
+        orm_mode = True
