@@ -10,7 +10,7 @@ class Ad(models.Model):
     description = models.CharField(max_length=1000, verbose_name="Описание", null=True, blank=True)
     address = models.CharField(max_length=120, verbose_name="Адрес")
     is_published = models.BooleanField(default=False, verbose_name="Опубликован или нет")
-    category_id = models.ForeignKey('Cat', on_delete=models.PROTECT, verbose_name="Категория")
+    category = models.ForeignKey('Cat', on_delete=models.PROTECT, verbose_name="Категория")
 
     class Meta:
         verbose_name_plural = "Объявления"
@@ -65,7 +65,21 @@ class AdModel(BaseModel):
     description: Optional[str]
     address: str
     is_published: bool
-    category_id: int = Field(alias="category_id_id")
+    category: int = Field(alias="category_id")
+
+    class Config:
+        orm_mode = True
+
+
+class AdUpdateModel(BaseModel):
+    pk: Optional[int] = Field(alias="id")
+    name: Optional[str]
+    author: Optional[str]
+    price: Optional[int]
+    description: Optional[str]
+    address: Optional[str]
+    is_published: Optional[bool]
+    category: Optional[int] = Field(alias="category_id")
 
     class Config:
         orm_mode = True
