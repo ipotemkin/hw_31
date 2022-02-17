@@ -34,11 +34,27 @@ class Cat(models.Model):
 
 
 class User(models.Model):
-    pass
+    username = models.CharField(max_length=30, null=True, blank=True, verbose_name="Имя пользователя")
+
+    def __str__(self):
+        return self.username
+
+    class Meta:
+        verbose_name_plural = "Пользователи"
+        verbose_name = "Пользователь"
+        ordering = ["username"]
 
 
 class Location(models.Model):
-    pass
+    name = models.CharField(max_length=30, null=True, blank=True, verbose_name="Локация")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Локации"
+        verbose_name = "Локация"
+        ordering = ["name"]
 
 
 class AdModel(BaseModel):
