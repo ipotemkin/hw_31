@@ -1,15 +1,16 @@
 import json
+import time
 
 from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import DetailView
+from django.views.generic import DetailView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
-from .models import Ad, Cat, AdModel, CatModel
+from .models import Ad, Cat, AdModel, CatModel, AdUpdateModel, CatUpdateModel
 
-from .utils import smart_json_response
+from .utils import smart_json_response, patch_shortcut
 
 # shortcuts
 ADO = Ad.objects  # noqa
@@ -24,10 +25,14 @@ def index(request):  # noqa
 class AdView(View):
     @staticmethod
     def get(request):  # noqa
+        """shows all ads"""
+
         return smart_json_response(AdModel, ADO.all())
 
     @staticmethod
     def post(request):
+        """ads a new ad"""
+
         ad = ADO.create(**AdModel.parse_raw(request.body).dict())
         return smart_json_response(AdModel, ad)
 
@@ -36,13 +41,128 @@ class AdDetailView(DetailView):
     model = Ad
 
     def get(self, request, *args, **kwargs) -> JsonResponse:
+        """shows an ad"""
+
         return smart_json_response(AdModel, self.get_object())
+
+# вариант с UpdateView, но я считаю, что в нашем случае лучше просто взять View + метод update (см. код ниже)
+# @method_decorator(csrf_exempt, name="dispatch")
+# class AdUpdateView(UpdateView):
+#     model = Ad
+#     fields = ["name", "author", "price", "description", "address", "is_published", "category"]
+#
+#     def patch(self, request, *args, **kwargs):
+#         updated_data = AdUpdateModel.parse_raw(request.body).dict(exclude_unset=True)
+#         obj_query = ADO.filter(pk=kwargs["pk"])
+#         obj_query.update(**updated_data)
+#         return smart_json_response(AdModel, obj_query.first())
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class AdUpdateView(View):
+
+    @staticmethod
+    def patch(request, pk):
+        """updates an ad"""
+
+        obj = patch_shortcut(request, pk, model=Ad, schema=AdUpdateModel)
+        return smart_json_response(AdModel, obj)
+
+        # # 1 --------------
+        # # parses the body payload and validates with pydnatic
+        # # t0 = time.perf_counter()
+        # try:
+        #     updated_data = AdUpdateModel.parse_raw(request.body).dict(exclude_unset=True)
+        # except ValueError as e:
+        #     return JsonResponse({"validation error": str(e)}, status=400)
+        # # t1 = time.perf_counter()
+        #
+        # # gets the required record
+        # obj_query = ADO.filter(pk=pk)
+        # if not obj_query:
+        #     raise Http404
+        # # t2 = time.perf_counter()
+        #
+        # # updates the record in DB
+        # try:
+        #     obj_query.update(**updated_data)
+        # except Exception as e:
+        #     return JsonResponse({"error while updating in database": str(e)}, status=400)
+        # # t3 = time.perf_counter()
+        #
+        # # print("update: 1 (parsing the payload): [%0.8fs]" % (t1 - t0))
+        # # print("update: 2 (getting the record form db): [%0.8fs]" % (t2 - t1))
+        # # print("update: 3 (updating the record in db): [%0.8fs]" % (t3 - t2))
+        # # print("update: total: [%0.8fs]" % (t3 - t0))
+
+        # 2 ------------
+
+        # t0 = time.perf_counter()
+        # try:
+        #     updated_data = AdUpdateModel.parse_raw(request.body)
+        # except ValueError as e:
+        #     return JsonResponse({"validation error": str(e)}, status=400)
+        # t1 = time.perf_counter()
+        #
+        # # gets the required record
+        # obj = get_object_or_404(Ad, pk=pk)
+        # t2 = time.perf_counter()
+        #
+        # # updates the record in DB
+        # if updated_data.name:
+        #     obj.name = updated_data.name
+        # if updated_data.author:
+        #     obj.author = updated_data.author
+        # if updated_data.price:
+        #     obj.price = updated_data.price
+        # if updated_data.description:
+        #     obj.description = updated_data.description
+        # if updated_data.address:
+        #     obj.address = updated_data.address
+        # if updated_data.is_published:
+        #     obj.is_published = updated_data.is_published
+        # if updated_data.category:
+        #     obj.category_id = updated_data.category
+        #
+        # try:
+        #     obj.full_clean()
+        # except ValueError as error:
+        #     return JsonResponse(error.message_dict, status=422)
+        # t3 = time.perf_counter()
+        #
+        # obj.save()
+        # t4 = time.perf_counter()
+        #
+        # print("save: 1 (parsing the payload): [%0.8fs]" % (t1 - t0))
+        # print("save: 2 (getting the record form db): [%0.8fs]" % (t2 - t1))
+        # print("save: 3 (validating): [%0.8fs]" % (t3 - t2))
+        # print("save: 4 (saving to db): [%0.8fs]" % (t4 - t3))
+        # print("save: total: [%0.8fs]" % (t4 - t0))
+
+        # выводы: БД, конечно, кэширует запросы, но если каждый раз запускать в разной последовательности,
+        # то можно сделать вывод, что вариант с update быстрее. Мануал django тоже пишет, что update быстрее
+
+        # return smart_json_response(AdModel, obj_query.first())
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class AdDeleteView(DeleteView):
+    model = Ad
+    success_url = "/"
+
+    def delete(self, request, *args, **kwargs):
+        """deletes an ad"""
+
+        super().delete(request, *args, **kwargs)
+        return JsonResponse({"status": "ok"}, status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class AdHTTPJsonView(View):
     @staticmethod
     def get(request) -> HttpResponse:
+        """shows all ads as json using html"""
+
         res_obj = ADO.filter(name__iregex=name) if (name := request.GET.get("name", None)) else ADO.all()
         s_dicts = [AdModel.from_orm(ad).dict(include={"pk", "name", "price"}) for ad in res_obj]
 
@@ -58,10 +178,12 @@ class AdHTTPJsonView(View):
 class AdHTTPView(View):
     @staticmethod
     def get(request) -> HttpResponse:
+        """shows all ads using an html template"""
         res_obj = ADO.filter(name__iregex=name) if (name := request.GET.get("name", None)) else ADO.all()
         return render(request, "ads_list.html", {"ads": res_obj})
 
 
+# shows an ad using an html template
 class AdHTTPDetailView(DetailView):
     model = Ad
 
@@ -70,24 +192,57 @@ class AdHTTPJsonDetailView(DetailView):
     model = Ad
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
+        """shows a json response as html"""
+
         s = AdModel.from_orm(self.get_object()).json(ensure_ascii=False, indent="\t")
         return HttpResponse(s, content_type="text/plain; charset=utf-8")
 
 
+# я не стал переделывать на ListView и CreateView, так как не вижу в этом никакой эффективности
 @method_decorator(csrf_exempt, name="dispatch")
 class CatView(View):
     @staticmethod
     def get(request) -> JsonResponse:  # noqa
+        """shows all categories"""
+
         return smart_json_response(CatModel, CATO.all())
 
     @staticmethod
     def post(request) -> JsonResponse:
+        """creates a new category"""
+
         cat = CATO.create(**CatModel.parse_raw(request.body).dict())
         return smart_json_response(CatModel, cat)
+
+
+# лучше было бы добавить patch в класс CatView, но поскольку просили другую ручку, то я сделал отдельный класс
+@method_decorator(csrf_exempt, name="dispatch")
+class CatUpdateView(View):
+
+    @staticmethod
+    def patch(request, pk) -> JsonResponse:
+        """partially updates a category"""
+
+        obj = patch_shortcut(request, pk, model=Cat, schema=CatUpdateModel)
+        return smart_json_response(CatModel, obj)
 
 
 class CatDetailView(DetailView):
     model = Cat
 
     def get(self, request, *args, **kwargs) -> JsonResponse:
+        """shows a category"""
+
         return smart_json_response(CatModel, self.get_object())
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class CatDeleteView(DeleteView):
+    model = Cat
+    success_url = "/"
+
+    def delete(self, request, *args, **kwargs):
+        """deletes a category"""
+
+        super().delete(request, *args, **kwargs)
+        return JsonResponse({"status": "ok"}, status=200)

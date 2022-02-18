@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, Extra, constr
 from django.db import models
 
 
@@ -15,7 +15,7 @@ class Ad(models.Model):
     class Meta:
         verbose_name_plural = "Объявления"
         verbose_name = "Объявление"
-        ordering = ["-price"]
+        # ordering = ["-price"]
 
     def __str__(self):
         return self.name
@@ -30,7 +30,7 @@ class Cat(models.Model):
     class Meta:
         verbose_name_plural = "Категории"
         verbose_name = "Категория"
-        ordering = ["name"]
+        # ordering = ["name"]
 
 
 class User(models.Model):
@@ -57,32 +57,31 @@ class Location(models.Model):
         ordering = ["name"]
 
 
-class AdModel(BaseModel):
+class CatBaseModelConfig(BaseModel):
+    class Config:
+        orm_mode = True
+        extra = Extra.forbid
+
+
+class AdModel(CatBaseModelConfig):
     pk: Optional[int] = Field(alias="id")
     name: str
     author: str
     price: int
     description: Optional[str]
     address: str
-    is_published: bool
-    category: int = Field(alias="category_id")
-
-    class Config:
-        orm_mode = True
+    is_published: bool = False
+    category_id: int  # = Field(alias="category_id")
 
 
-class AdUpdateModel(BaseModel):
-    pk: Optional[int] = Field(alias="id")
+class AdUpdateModel(CatBaseModelConfig):
     name: Optional[str]
     author: Optional[str]
     price: Optional[int]
     description: Optional[str]
     address: Optional[str]
     is_published: Optional[bool]
-    category: Optional[int] = Field(alias="category_id")
-
-    class Config:
-        orm_mode = True
+    category_id: Optional[int] # = Field(alias="category_id")
 
 
 # an attempt to serialize pydantic models
@@ -93,9 +92,10 @@ class AdUpdateModel(BaseModel):
 #         orm_mode = True
 
 
-class CatModel(BaseModel):
+class CatModel(CatBaseModelConfig):
     pk: Optional[int] = Field(alias="id")
-    name: str
+    name: constr(max_length=120)
 
-    class Config:
-        orm_mode = True
+
+class CatUpdateModel(CatBaseModelConfig):
+    name: Optional[constr(max_length=120)]
