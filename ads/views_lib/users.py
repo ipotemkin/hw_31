@@ -35,6 +35,7 @@ class UserView(View):
         return pretty_json_response([
             user_encoder(user) for user in USERO.all()
         ])
+        # следующая строчка не работает, так как я не разобрался с many2many в pydantic
         # return smart_json_response(UserModel, USERO.all())
 
     @staticmethod
@@ -59,11 +60,50 @@ class UserView(View):
         return pretty_json_response(user_encoder(user))
 
 
+class UserDetailView(DetailView):
+    model = User
+
+    def get(self, request, *args, **kwargs):  # ads/user/pk/
+        """shows a user"""
+
+        return pretty_json_response(user_encoder(self.get_object()))
+        # return smart_json_response(UserModel, self.get_object())
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class UserCreateView(CreateView):
+    model = User
+    fields = ["username", "first_name", "last_name", "role", "age", "locations"]
+
+    def post(self, request, *args, **kwargs):  # ads/user/create/
+        super().post(request, *args, **kwargs)
+        """ads a new user"""
+
+        # ad = ADO.create(**AdModel.parse_raw(request.body).dict())
+        # return smart_json_response(AdModel, ad)
+
+        user_data = json.loads(request.body)
+
+        user = User()
+        update_from_dict(user_data, user)
+        user.full_clean()
+        user.save()
+
+        if locations := user_data.get("locations"):
+            for loc in locations:
+                loc_obj, _ = LOCO.get_or_create(name=loc)
+                user.locations.add(loc_obj)
+            user.full_clean()
+            user.save()
+
+        return pretty_json_response(user_encoder(user))
+
+
 @method_decorator(csrf_exempt, name="dispatch")
 class UserUpdateView(View):
 
     @staticmethod
-    def patch(request, pk):  # ads/ad/pk/update
+    def patch(request, pk):  # ads/ad/pk/update/
         """updates a user"""
 
         # обновляем все поля, кроме locations (я не смог это реализовать в pydantic – эти поля будем писать отдельно)
@@ -86,51 +126,11 @@ class UserUpdateView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class UserCreateView(CreateView):
-    model = User
-    fields = ["username", "first_name", "last_name", "role", "age", "locations"]
-
-    def post(self, request, *args, **kwargs):
-        super().post(request, *args, **kwargs)
-        """ads a new user"""
-
-        # ad = ADO.create(**AdModel.parse_raw(request.body).dict())
-        # return smart_json_response(AdModel, ad)
-
-        user_data = json.loads(request.body)
-
-        user = User()
-
-        update_from_dict(user_data, user)
-        user.full_clean()
-        user.save()
-
-        for loc in user_data["locations"]:
-            loc_obj, _ = LOCO.get_or_create(name=loc)
-            user.locations.add(loc_obj)
-
-        user.full_clean()
-        user.save()
-
-        return pretty_json_response(user_encoder(user))
-
-
-class UserDetailView(DetailView):
-    model = User
-
-    def get(self, request, *args, **kwargs) -> JsonResponse:
-        """shows a user"""
-
-        return pretty_json_response(user_encoder(self.get_object()))
-        # return smart_json_response(UserModel, self.get_object())
-
-
-@method_decorator(csrf_exempt, name="dispatch")
 class UserDeleteView(DeleteView):
     model = User
     success_url = "/"
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):  # ads/user/pk/delete/
         """deletes a user"""
 
         super().delete(request, *args, **kwargs)
