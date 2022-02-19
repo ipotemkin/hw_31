@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Callable
 
 from pydantic import BaseModel
 
@@ -117,7 +117,11 @@ class SmartPaginator(Paginator):
 
     def get_page(self, number: int):
         page_obj = super().get_page(number)
-        self.page_obj_list = [self.schema.from_orm(item).dict() for item in page_obj]
+        if isinstance(self.schema, Callable):
+            self.page_obj_list = [self.schema(item) for item in page_obj]
+        else:
+            self.page_obj_list = [self.schema.from_orm(item).dict() for item in page_obj]
+
         return self._format_response()
 
 

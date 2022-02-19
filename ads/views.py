@@ -60,12 +60,12 @@ class AdView(View):  # shows all ads and create an ad
 
         # if paginated
         if page_number := request.GET.get("page"):
-            paginator = SmartPaginator(obj_list, TOTAL_ON_PAGE, AdModel)
+            paginator = SmartPaginator(obj_list, TOTAL_ON_PAGE, schema=ad_encoder)
             return pretty_json_response(paginator.get_page(page_number))
 
         # if not paginated
         return pretty_json_response(
-            [ad_encoder(ad) for ad in obj_list]
+            [ad_encoder(ad) for ad in obj_list.select_related("author", "category")]
         )
         # return smart_json_response(AdModel, obj_list)
 

@@ -5,9 +5,12 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import DetailView, CreateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Count, Sum, Q
+
+from skyvito.settings import TOTAL_ON_PAGE
 
 from ads.models import User, UserModel, UserUpdateModel, USERO, LOCO
-from ads.utils import smart_json_response, patch_shortcut, pretty_json_response, update_from_dict
+from ads.utils import smart_json_response, patch_shortcut, pretty_json_response, update_from_dict, SmartPaginator
 
 
 def user_encoder(data):
@@ -20,7 +23,10 @@ def user_encoder(data):
         "last_name": data.last_name,
         "role": data.role,
         "age": data.age,
-        "locations": [loc.name for loc in data.locations.all()]
+        "locations": [loc.name for loc in data.locations.all()],
+        # "ad_counts": data.ad_counts,
+        # "total_ads": int(data.total_ads) if data.total_ads else 0
+        "total_ads": data.total_ads
         # "locations": [{"name": loc.name} for loc in data.locations.all()]
     }
 
@@ -28,17 +34,27 @@ def user_encoder(data):
 @method_decorator(csrf_exempt, name="dispatch")
 class UserView(View):
     @staticmethod
-    def get(request):  # noqa
+    def get(request):  # GET ads/user/ # noqa
         """shows all users"""
 
-        return pretty_json_response([
-            user_encoder(user) for user in USERO.all()
-        ])
+        # obj_list = USERO.all().prefetch_related("locations").annotate(total_ads=Sum('ad__is_published'))
+        obj_list = USERO.all().prefetch_related("locations").annotate(
+            total_ads=Count('ad__is_published', filter=Q(ad__is_published=True))
+        )
+        # .order_by("-total_ads")
+
+        # if paginated
+        if page_number := request.GET.get("page"):
+            paginator = SmartPaginator(obj_list, TOTAL_ON_PAGE, schema=user_encoder)
+            return pretty_json_response(paginator.get_page(page_number))
+
+        # if not paginated
+        return pretty_json_response([user_encoder(user) for user in obj_list])
         # следующая строчка не работает, так как я не разобрался с many2many в pydantic
         # return smart_json_response(UserModel, USERO.all())
 
     @staticmethod
-    def post(request):  # ads/ad/pk
+    def post(request):  # POST ads/user/pk
         """ads a new user"""
 
         # ad = ADO.create(**AdModel.parse_raw(request.body).dict())
