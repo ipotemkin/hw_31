@@ -28,12 +28,23 @@ def smart_json_response(model, data: Union[dict, list]) -> JsonResponse:
     uses json_dumps_params={'ensure_ascii': False, 'indent': 2}
     """
 
+    is_func = False
+    if isinstance(model, Callable):
+        is_func = True
+
     lst = False
     try:
         len(data)
     except TypeError:
         lst = True
     finally:
+        if is_func:
+            return JsonResponse(
+                model(data) if lst else [model(obj) for obj in data],
+                safe=False,
+                json_dumps_params={'ensure_ascii': False, 'indent': 2}
+            )
+
         return JsonResponse(
             model.from_orm(data).dict() if lst else [model.from_orm(obj).dict() for obj in data],
             safe=False,

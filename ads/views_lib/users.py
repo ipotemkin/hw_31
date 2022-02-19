@@ -24,8 +24,6 @@ def user_encoder(data):
         "role": data.role,
         "age": data.age,
         "locations": [loc.name for loc in data.locations.all()],
-        # "ad_counts": data.ad_counts,
-        # "total_ads": int(data.total_ads) if data.total_ads else 0
         "total_ads": data.total_ads
         # "locations": [{"name": loc.name} for loc in data.locations.all()]
     }
@@ -37,7 +35,6 @@ class UserView(View):
     def get(request):  # GET ads/user/ # noqa
         """shows all users"""
 
-        # obj_list = USERO.all().prefetch_related("locations").annotate(total_ads=Sum('ad__is_published'))
         obj_list = USERO.all().prefetch_related("locations").annotate(
             total_ads=Count('ad__is_published', filter=Q(ad__is_published=True))
         )
