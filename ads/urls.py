@@ -1,8 +1,6 @@
 from ads import views
+from ads.views_lib import users
 from django.urls import path
-
-
-
 
 
 urlpatterns = [
@@ -19,10 +17,11 @@ urlpatterns = [
     path("cat/<int:pk>/", views.CatDetailView.as_view(), name="cat"),
     path("cat/", views.CatView.as_view(), name="cats_all"),
     # user
-    path("user/<int:pk>/update/", views.UserUpdateView.as_view(), name="user_update"),
-    path("user/<int:pk>/", views.UserDetailView.as_view(), name="user"),
-    path("user/create/", views.UserCreateView.as_view(), name="user_create"),
-    path("user/", views.UserView.as_view(), name="users_all"),
+    path("user/<int:pk>/update/", users.UserUpdateView.as_view(), name="user_update"),
+    path("user/<int:pk>/delete/", users.UserDeleteView.as_view(), name="user_delete"),
+    path("user/<int:pk>/", users.UserDetailView.as_view(), name="user"),
+    path("user/create/", users.UserCreateView.as_view(), name="user_create"),
+    path("user/", users.UserView.as_view(), name="users_all"),
     # additional urls
     path("ad/http-json/", views.AdHTTPJsonView.as_view(), name="ad_http_json"),
     path("ad/http-json/<int:pk>/", views.AdHTTPJsonDetailView.as_view(), name="ad_http_json_pk"),

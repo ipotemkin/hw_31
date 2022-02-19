@@ -16,45 +16,20 @@ from .models import (
     CatModel,
     AdUpdateModel,
     CatUpdateModel,
-    User,
-    UserModel,
-    UserUpdateModel,
-    Location
+    ADO,
+    CATO,
 )
+
 from .utils import smart_json_response, patch_shortcut, pretty_json_response, SmartPaginator
 
 # shortcuts
-ADO = Ad.objects  # noqa
-CATO = Cat.objects  # noqa
-USERO = User.objects  # noqa
-LOCO = Location.objects  # noqa
-on_page = TOTAL_ON_PAGE
+# ADO = Ad.objects  # noqa
+# CATO = Cat.objects  # noqa
+# USERO = User.objects  # noqa
+# LOCO = Location.objects  # noqa
 
 def index(request):  # noqa
     return JsonResponse({"status": "ok"})
-
-
-def user_encoder(data):
-    return {
-        "id": data.id,
-        "username": data.username,
-        "first_name": data.first_name,
-        "last_name": data.last_name,
-        "role": data.role,
-        "age": data.age,
-        "locations": [loc.name for loc in data.locations.all()]
-        # "locations": [{"name": loc.name} for loc in data.locations.all()]
-    }
-
-
-def update_from_dict(source: dict, target):
-    for key, value in source.items():
-        try:
-            if value:
-                target.__dict__[key] = value
-        except AttributeError:
-            continue
-    # return target
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -310,102 +285,3 @@ class CatDeleteView(DeleteView):
 
         super().delete(request, *args, **kwargs)
         return JsonResponse({"status": "ok"}, status=200)
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-class UserView(View):
-    @staticmethod
-    def get(request):  # noqa
-        """shows all users"""
-
-        return pretty_json_response([
-            user_encoder(user) for user in USERO.all()
-        ])
-        # return smart_json_response(UserModel, USERO.all())
-
-    @staticmethod
-    def post(request):  # ads/ad/pk
-        """ads a new ad"""
-
-        # ad = ADO.create(**AdModel.parse_raw(request.body).dict())
-        # return smart_json_response(AdModel, ad)
-
-        user_data = json.loads(request.body)
-
-        # user = User(**UserModel.parse_obj(user_data).dict(exclude_unset=True))
-        user = USERO.create(**UserModel.parse_obj(user_data).dict(exclude_unset=True))
-
-        for loc in user_data["locations"]:
-            loc_obj, _ = LOCO.get_or_create(name=loc)
-            user.locations.add(loc_obj)
-
-        user.full_clean()
-        user.save()
-
-        return pretty_json_response(user_encoder(user))
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-class UserUpdateView(View):
-
-    @staticmethod
-    def patch(request, pk):  # ads/ad/pk/update
-        """updates an ad"""
-
-        # обновляем все поля, кроме locations (я не смог это реализовать в pydantic – эти поля будем писать отдельно)
-        user = patch_shortcut(request, pk, model=User, schema=UserUpdateModel)
-
-        # обновляем поля locations, если они есть в payload
-        if locations := json.loads(request.body).get("locations"):
-            user.locations.set([])  # обнуляем locations
-            for loc in locations:
-                loc_obj, _ = LOCO.get_or_create(name=loc)
-                user.locations.add(loc_obj)
-            user.full_clean()
-            user.save()
-
-        return pretty_json_response(user_encoder(user))
-
-        # эти строчки можно будет использовать, когда я разберусь с pydantic
-        # obj = patch_shortcut(request, pk, model=Ad, schema=AdUpdateModel)
-        # return smart_json_response(AdModel, obj)
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-class UserCreateView(CreateView):
-    model = User
-    fields = ["username", "first_name", "last_name", "role", "age", "locations"]
-
-    def post(self, request, *args, **kwargs):
-        super().post(request, *args, **kwargs)
-        """ads a new ad"""
-
-        # ad = ADO.create(**AdModel.parse_raw(request.body).dict())
-        # return smart_json_response(AdModel, ad)
-
-        user_data = json.loads(request.body)
-
-        user = User()
-
-        update_from_dict(user_data, user)
-        user.full_clean()
-        user.save()
-
-        for loc in user_data["locations"]:
-            loc_obj, _ = LOCO.get_or_create(name=loc)
-            user.locations.add(loc_obj)
-
-        user.full_clean()
-        user.save()
-
-        return pretty_json_response(user_encoder(user))
-
-
-class UserDetailView(DetailView):
-    model = User
-
-    def get(self, request, *args, **kwargs) -> JsonResponse:
-        """shows a category"""
-
-        return pretty_json_response(user_encoder(self.get_object()))
-        # return smart_json_response(UserModel, self.get_object())

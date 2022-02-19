@@ -134,3 +134,9 @@ class UserUpdateModel(BaseModelConfig):
 
     class Config:
         fields = {'locations': {'exclude': True}}
+
+# shortcuts
+ADO = Ad.objects  # noqa
+CATO = Cat.objects  # noqa
+USERO = User.objects  # noqa
+LOCO = Location.objects  # noqa
