@@ -1,6 +1,10 @@
 from typing import Union
 
+from pydantic import BaseModel
+
 from django.http import JsonResponse, Http404
+from django.core.paginator import Paginator
+from django.core.exceptions import BadRequest
 
 
 def pretty_json_response(json_data: Union[dict, list[dict]]) -> JsonResponse:
@@ -51,8 +55,9 @@ def patch_shortcut(request, pk, model, schema):
     # parses the body payload and validates with pydantic
     try:
         updated_data = schema.parse_raw(request.body).dict(exclude_unset=True)
-    except ValueError as e:
-        return JsonResponse({"validation error": str(e)}, status=400)
+    except (ValueError, AttributeError) as e:
+        raise BadRequest(e)
+        # return JsonResponse({"validation error": str(e)}, status=400)
 
     # gets the required record
     obj_query = model.objects.filter(pk=pk)
@@ -66,3 +71,51 @@ def patch_shortcut(request, pk, model, schema):
         return JsonResponse({"error while updating in database": str(e)}, status=400)
 
     return obj_query.first()
+
+
+# TODO to delete on release
+def format_paginated_response(object_lst, page_obj):
+    """deprecated after SmartPaginator"""
+
+    return {
+        "items": object_lst,
+        "total": page_obj.paginator.count,
+        "per_page": page_obj.paginator.per_page,
+        "num_pages": page_obj.paginator.num_pages
+    }
+
+
+# TODO to delete on release
+def get_paginated_response(object_list, per_page, page_number, schema):
+    """deprecated after SmartPaginator"""
+
+    paginator = Paginator(object_list, per_page)
+    page_obj = paginator.get_page(page_number)
+    page_obj_list = [schema.from_orm(ad).dict() for ad in page_obj]
+    return format_paginated_response(page_obj_list, page_obj)
+
+
+class SmartPaginator(Paginator):
+    """
+    Ads to Django Paginator a specified output format, based on a specified pydantic schema
+    """
+
+    def __init__(self, object_list, per_page: int, schema):
+        super().__init__(object_list, per_page)
+        self.schema = schema
+        self.page_obj_list = None
+
+    def _format_response(self):
+        if self.page_obj_list:
+            return {
+                "items": self.page_obj_list,
+                "total": self.count,
+                "per_page": self.per_page,
+                "num_pages": self.num_pages
+            }
+        return None
+
+    def get_page(self, number):
+        page_obj = super().get_page(number)
+        self.page_obj_list = [self.schema.from_orm(item).dict() for item in page_obj]
+        return self._format_response()
