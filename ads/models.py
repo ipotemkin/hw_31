@@ -1,13 +1,14 @@
 # TODO to make age field > 0
 
-from typing import Optional
+from typing import Optional, Union
 from pydantic import BaseModel, Field, Extra, constr
 from django.db import models
 
 
 class Ad(models.Model):
     name = models.CharField(max_length=100, verbose_name="Объявление")
-    author = models.CharField(max_length=100, verbose_name="Автор")
+    # author = models.CharField(max_length=100, verbose_name="Автор")
+    author = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name="Автор")
     price = models.IntegerField(verbose_name="Цена")
     description = models.CharField(max_length=1000, verbose_name="Описание", null=True, blank=True)
     address = models.CharField(max_length=120, verbose_name="Адрес")
@@ -17,7 +18,7 @@ class Ad(models.Model):
     class Meta:
         verbose_name_plural = "Объявления"
         verbose_name = "Объявление"
-        # ordering = ["-price"]
+        ordering = ["-price"]
 
     def __str__(self):
         return self.name
@@ -73,7 +74,7 @@ class BaseModelConfig(BaseModel):
 class AdModel(BaseModelConfig):
     pk: Optional[int] = Field(alias="id")
     name: str
-    author: str
+    author_id: int = Field(alias="author_id")
     price: int
     description: Optional[str]
     address: str
@@ -83,7 +84,7 @@ class AdModel(BaseModelConfig):
 
 class AdUpdateModel(BaseModelConfig):
     name: Optional[str]
-    author: Optional[str]
+    author_id: Optional[int]
     price: Optional[int]
     description: Optional[str]
     address: Optional[str]

@@ -28,6 +28,24 @@ from .utils import smart_json_response, patch_shortcut, pretty_json_response, Sm
 # USERO = User.objects  # noqa
 # LOCO = Location.objects  # noqa
 
+
+def ad_encoder(data):
+    """converts user object into a dict"""
+
+    return {
+        "id": data.id,
+        "name": data.name,
+        "author_id": data.author_id,
+        "author": data.author.username,
+        "price": data.price,
+        "description": data.description,
+        "address": data.address,
+        "is_published": data.is_published,
+        "category_id": data.category_id,
+        "category": data.category.name
+    }
+
+
 def index(request):  # noqa
     return JsonResponse({"status": "ok"})
 
@@ -46,14 +64,18 @@ class AdView(View):  # shows all ads and create an ad
             return pretty_json_response(paginator.get_page(page_number))
 
         # if not paginated
-        return smart_json_response(AdModel, obj_list)
+        return pretty_json_response(
+            [ad_encoder(ad) for ad in obj_list]
+        )
+        # return smart_json_response(AdModel, obj_list)
 
     @staticmethod
     def post(request):
         """ads a new ad"""
 
         ad = ADO.create(**AdModel.parse_raw(request.body).dict())
-        return smart_json_response(AdModel, ad)
+        return pretty_json_response(ad_encoder(ad))
+        # return smart_json_response(AdModel, ad)
 
 
 # вариант с использованием класса  ListView и встроенного пагинатора
@@ -65,7 +87,10 @@ class AdListView(ListView):
         """shows all ads, paginated"""
 
         super().get(request, *args, **kwargs)
-        return smart_json_response(AdModel, self.get_context_data()["object_list"])
+        return pretty_json_response(
+            [ad_encoder(ad) for ad in self.get_context_data()["object_list"]]
+        )
+        # return smart_json_response(AdModel, self.get_context_data()["object_list"])
 
 
 class AdDetailView(DetailView):
@@ -74,7 +99,8 @@ class AdDetailView(DetailView):
     def get(self, request, *args, **kwargs) -> JsonResponse:
         """shows an ad"""
 
-        return smart_json_response(AdModel, self.get_object())
+        return pretty_json_response(ad_encoder(self.get_object()))
+        # return smart_json_response(AdModel, self.get_object())
 
 # вариант с UpdateView, но я считаю, что в нашем случае лучше просто взять View + метод update (см. код ниже)
 # @method_decorator(csrf_exempt, name="dispatch")
@@ -97,7 +123,8 @@ class AdUpdateView(View):
         """updates an ad"""
 
         obj = patch_shortcut(request, pk, model=Ad, schema=AdUpdateModel)
-        return smart_json_response(AdModel, obj)
+        return pretty_json_response(ad_encoder(obj))
+        # return smart_json_response(AdModel, obj)
 
         # # 1 --------------
         # # parses the body payload and validates with pydnatic
