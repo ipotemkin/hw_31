@@ -1,3 +1,5 @@
+# TODO to make age field > 0
+
 from typing import Optional
 from pydantic import BaseModel, Field, Extra, constr
 from django.db import models

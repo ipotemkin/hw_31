@@ -6,9 +6,8 @@ from django.views import View
 from django.views.generic import DetailView, CreateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
 
-from skyvito.settings import TOTAL_ON_PAGE
 from ads.models import User, UserModel, UserUpdateModel, USERO, LOCO
-from ads.utils import smart_json_response, patch_shortcut, pretty_json_response, SmartPaginator, update_from_dict
+from ads.utils import smart_json_response, patch_shortcut, pretty_json_response, update_from_dict
 
 
 def user_encoder(data):

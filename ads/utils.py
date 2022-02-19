@@ -115,17 +115,19 @@ class SmartPaginator(Paginator):
             }
         return None
 
-    def get_page(self, number):
+    def get_page(self, number: int):
         page_obj = super().get_page(number)
         self.page_obj_list = [self.schema.from_orm(item).dict() for item in page_obj]
         return self._format_response()
 
 
-def update_from_dict(source: dict, target):
+def update_from_dict(source: dict, target: object) -> object:
+    """updates the target with data in the source dict"""
+
     for key, value in source.items():
         try:
             if value:
                 target.__dict__[key] = value
         except AttributeError:
             continue
-    # return target
+    return target
