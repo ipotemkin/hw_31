@@ -14,6 +14,7 @@ class Ad(models.Model):
     address = models.CharField(max_length=120, verbose_name="Адрес")
     is_published = models.BooleanField(default=False, verbose_name="Опубликован или нет")
     category = models.ForeignKey('Cat', on_delete=models.PROTECT, verbose_name="Категория")
+    image = models.ImageField(upload_to="img/")
 
     class Meta:
         verbose_name_plural = "Объявления"
@@ -90,14 +91,6 @@ class AdUpdateModel(BaseModelConfig):
     address: Optional[str]
     is_published: Optional[bool]
     category_id: Optional[int]  # = Field(alias="category_id")
-
-
-# an attempt to serialize pydantic models
-# class AdsModel(BaseModel):
-#     item: list[AdModel]
-#
-#     class Config:
-#         orm_mode = True
 
 
 class CatModel(BaseModelConfig):

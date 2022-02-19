@@ -64,10 +64,7 @@ class AdView(View):  # shows all ads and create an ad
             return pretty_json_response(paginator.get_page(page_number))
 
         # if not paginated
-        return pretty_json_response(
-            [ad_encoder(ad) for ad in obj_list.select_related("author", "category")]
-        )
-        # return smart_json_response(AdModel, obj_list)
+        return smart_json_response(ad_encoder, obj_list.select_related("author", "category"))
 
     @staticmethod
     def post(request):

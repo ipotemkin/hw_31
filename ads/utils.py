@@ -29,7 +29,7 @@ def smart_json_response(model, data: Union[dict, list]) -> JsonResponse:
     """
 
     is_func = False
-    if isinstance(model, Callable):
+    if model.__class__.__name__ == 'function':
         is_func = True
 
     lst = False
@@ -128,7 +128,7 @@ class SmartPaginator(Paginator):
 
     def get_page(self, number: int):
         page_obj = super().get_page(number)
-        if isinstance(self.schema, Callable):
+        if self.schema.__class__.__name__ == 'function':
             self.page_obj_list = [self.schema(item) for item in page_obj]
         else:
             self.page_obj_list = [self.schema.from_orm(item).dict() for item in page_obj]

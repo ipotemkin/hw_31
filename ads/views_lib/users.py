@@ -24,9 +24,16 @@ def user_encoder(data):
         "role": data.role,
         "age": data.age,
         "locations": [loc.name for loc in data.locations.all()],
-        "total_ads": data.total_ads
+        # "total_ads": data.total_ads
         # "locations": [{"name": loc.name} for loc in data.locations.all()]
     }
+
+
+def user_encoder_plus(data):
+    """converts user object into a dict"""
+    res = user_encoder(data)
+    res["total_ads"] = data.total_ads
+    return res
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -42,11 +49,11 @@ class UserView(View):
 
         # if paginated
         if page_number := request.GET.get("page"):
-            paginator = SmartPaginator(obj_list, TOTAL_ON_PAGE, schema=user_encoder)
+            paginator = SmartPaginator(obj_list, TOTAL_ON_PAGE, schema=user_encoder_plus)
             return pretty_json_response(paginator.get_page(page_number))
 
         # if not paginated
-        return pretty_json_response([user_encoder(user) for user in obj_list])
+        return smart_json_response(user_encoder_plus, obj_list)
         # следующая строчка не работает, так как я не разобрался с many2many в pydantic
         # return smart_json_response(UserModel, USERO.all())
 
