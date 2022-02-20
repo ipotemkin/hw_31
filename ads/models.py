@@ -11,7 +11,7 @@ class Ad(models.Model):
     author = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name="Автор")
     price = models.IntegerField(verbose_name="Цена")
     description = models.CharField(max_length=1000, verbose_name="Описание", null=True, blank=True)
-    address = models.CharField(max_length=120, verbose_name="Адрес")
+    # address = models.CharField(max_length=120, verbose_name="Адрес")
     is_published = models.BooleanField(default=False, verbose_name="Опубликован или нет")
     category = models.ForeignKey('Cat', on_delete=models.PROTECT, verbose_name="Категория")
     image = models.ImageField(upload_to="img/", null=True)
@@ -78,7 +78,7 @@ class AdModel(BaseModelConfig):
     author_id: int = Field(alias="author_id")
     price: int
     description: Optional[str]
-    address: str
+    # address: str
     is_published: bool = False
     category_id: int  # = Field(alias="category_id")
 
@@ -88,7 +88,7 @@ class AdUpdateModel(BaseModelConfig):
     author_id: Optional[int]
     price: Optional[int]
     description: Optional[str]
-    address: Optional[str]
+    # address: Optional[str]
     is_published: Optional[bool]
     category_id: Optional[int]  # = Field(alias="category_id")
 

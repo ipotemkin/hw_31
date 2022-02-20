@@ -39,7 +39,7 @@ def ad_encoder(data):
         "author": data.author.username,
         "price": data.price,
         "description": data.description,
-        "address": data.address,
+        # "address": data.address,
         "is_published": data.is_published,
         "category_id": data.category_id,
         "category": data.category.name,
