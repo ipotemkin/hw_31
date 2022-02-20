@@ -1,20 +1,16 @@
 from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import DetailView, UpdateView, DeleteView, ListView, CreateView
+from django.views.generic import DetailView, UpdateView, DeleteView, ListView
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 
 from skyvito.settings import TOTAL_ON_PAGE
 from ads.models import (
     Ad,
-    Cat,
     AdModel,
-    CatModel,
     AdUpdateModel,
-    CatUpdateModel,
     ADO,
-    CATO,
 )
 
 from ads.utils import smart_json_response, patch_shortcut, pretty_json_response, SmartPaginator
@@ -44,7 +40,7 @@ def index(request):  # noqa
 @method_decorator(csrf_exempt, name="dispatch")
 class AdView(View):  # shows all ads and create an ad
     @staticmethod
-    def get(request):  # ads/ad/
+    def get(request):  # GET ads/ad/
         """shows all ads, paginated if page number is present in query params"""
 
         obj_list = ADO.all()
@@ -58,7 +54,7 @@ class AdView(View):  # shows all ads and create an ad
         return smart_json_response(ad_decoder, obj_list.select_related("author", "category"))
 
     @staticmethod
-    def post(request):
+    def post(request):  # POST ads/ad/
         """ads a new ad"""
 
         ad = ADO.create(**AdModel.parse_raw(request.body).dict())
@@ -71,7 +67,7 @@ class AdListView(ListView):
     model = Ad
     paginate_by = TOTAL_ON_PAGE
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):  # GET ads/ads/
         """shows all ads, paginated"""
 
         super().get(request, *args, **kwargs)
@@ -84,7 +80,7 @@ class AdListView(ListView):
 class AdDetailView(DetailView):
     model = Ad
 
-    def get(self, request, *args, **kwargs) -> JsonResponse:
+    def get(self, request, *args, **kwargs) -> JsonResponse:  # GET ads/ad/
         """shows an ad"""
 
         return pretty_json_response(ad_decoder(self.get_object()))
@@ -107,7 +103,7 @@ class AdDetailView(DetailView):
 class AdUpdateView(View):
 
     @staticmethod
-    def patch(request, pk):
+    def patch(request, pk):  # PATCH ads/ad/pk/update/
         """updates an ad"""
 
         obj = patch_shortcut(request, pk, model=Ad, schema=AdUpdateModel)
@@ -196,7 +192,9 @@ class AdImageUpdateView(UpdateView):
     model = Ad
     fields = ["image"]
 
-    def post(self, request, *args, **kwargs):  # ads/ad/pk/upload_image/
+    def post(self, request, *args, **kwargs):  # POST ads/ad/pk/upload_image/
+        """ads/updates an image for the specified ad"""
+
         self.object = self.get_object()
         self.object.image = request.FILES["image"]
         self.object.save()
@@ -219,70 +217,12 @@ class AdDeleteView(DeleteView):
 @method_decorator(csrf_exempt, name="dispatch")
 class AdHTMLView(View):
     @staticmethod
-    def get(request) -> HttpResponse:
+    def get(request) -> HttpResponse:  # GET ads/ad/html/
         """shows all ads using an html template"""
         res_obj = ADO.filter(name__iregex=name) if (name := request.GET.get("name", None)) else ADO.all()
         return render(request, "ads_list.html", {"ads": res_obj})
 
 
 # shows an ad using an html template
-class AdHTMLDetailView(DetailView):
+class AdHTMLDetailView(DetailView):  # GET ads/ad/html/pk/
     model = Ad
-
-
-# я не стал переделывать на ListView и CreateView, так как не вижу в этом никакой эффективности
-@method_decorator(csrf_exempt, name="dispatch")
-class CatView(View):
-    @staticmethod
-    def get(request) -> JsonResponse:  # noqa
-        """shows all categories"""
-
-        obj_list = CATO.all()
-
-        # if paginated
-        if page_number := request.GET.get("page"):
-            paginator = SmartPaginator(obj_list, TOTAL_ON_PAGE, CatModel)
-            return pretty_json_response(paginator.get_page(page_number))
-
-        # if not paginated
-        return smart_json_response(CatModel, obj_list)
-
-    @staticmethod
-    def post(request) -> JsonResponse:
-        """creates a new category"""
-
-        cat = CATO.create(**CatModel.parse_raw(request.body).dict())
-        return smart_json_response(CatModel, cat)
-
-
-# лучше было бы добавить patch в класс CatView, но поскольку просили другую ручку, то я сделал отдельный класс
-@method_decorator(csrf_exempt, name="dispatch")
-class CatUpdateView(View):
-
-    @staticmethod
-    def patch(request, pk) -> JsonResponse:
-        """partially updates a category"""
-
-        obj = patch_shortcut(request, pk, model=Cat, schema=CatUpdateModel)
-        return smart_json_response(CatModel, obj)
-
-
-class CatDetailView(DetailView):
-    model = Cat
-
-    def get(self, request, *args, **kwargs) -> JsonResponse:
-        """shows a category"""
-
-        return smart_json_response(CatModel, self.get_object())
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-class CatDeleteView(DeleteView):
-    model = Cat
-    success_url = "/"
-
-    def delete(self, request, *args, **kwargs):
-        """deletes a category"""
-
-        super().delete(request, *args, **kwargs)
-        return JsonResponse({"status": "ok"}, status=200)

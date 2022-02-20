@@ -1,4 +1,4 @@
-from ads.views import ads, users
+from ads.views import ads, users, categories
 from django.urls import path
 
 urlpatterns = [
@@ -11,10 +11,10 @@ urlpatterns = [
     path("ads/", ads.AdListView.as_view(), name="ads_list"),
 
     # cat
-    path("cat/<int:pk>/update/", ads.CatUpdateView.as_view(), name="cat_update"),
-    path("cat/<int:pk>/delete/", ads.CatDeleteView.as_view(), name="cat_delete"),
-    path("cat/<int:pk>/", ads.CatDetailView.as_view(), name="cat"),
-    path("cat/", ads.CatView.as_view(), name="cats_all"),
+    path("cat/<int:pk>/update/", categories.CatUpdateView.as_view(), name="cat_update"),
+    path("cat/<int:pk>/delete/", categories.CatDeleteView.as_view(), name="cat_delete"),
+    path("cat/<int:pk>/", categories.CatDetailView.as_view(), name="cat"),
+    path("cat/", categories.CatView.as_view(), name="cats_all"),
 
     # user
     path("user/<int:pk>/update/", users.UserUpdateView.as_view(), name="user_update"),
