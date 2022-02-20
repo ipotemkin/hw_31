@@ -1,6 +1,3 @@
-import json
-import time
-
 from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -9,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
 
 from skyvito.settings import TOTAL_ON_PAGE
-from .models import (
+from ads.models import (
     Ad,
     Cat,
     AdModel,
@@ -20,16 +17,10 @@ from .models import (
     CATO,
 )
 
-from .utils import smart_json_response, patch_shortcut, pretty_json_response, SmartPaginator
-
-# shortcuts
-# ADO = Ad.objects  # noqa
-# CATO = Cat.objects  # noqa
-# USERO = User.objects  # noqa
-# LOCO = Location.objects  # noqa
+from ads.utils import smart_json_response, patch_shortcut, pretty_json_response, SmartPaginator
 
 
-def ad_encoder(data):
+def ad_decoder(data):
     """converts user object into a dict"""
 
     return {
@@ -39,7 +30,6 @@ def ad_encoder(data):
         "author": data.author.username,
         "price": data.price,
         "description": data.description,
-        # "address": data.address,
         "is_published": data.is_published,
         "category_id": data.category_id,
         "category": data.category.name,
@@ -61,18 +51,18 @@ class AdView(View):  # shows all ads and create an ad
 
         # if paginated
         if page_number := request.GET.get("page"):
-            paginator = SmartPaginator(obj_list, TOTAL_ON_PAGE, schema=ad_encoder)
+            paginator = SmartPaginator(obj_list, TOTAL_ON_PAGE, schema=ad_decoder)
             return pretty_json_response(paginator.get_page(page_number))
 
         # if not paginated
-        return smart_json_response(ad_encoder, obj_list.select_related("author", "category"))
+        return smart_json_response(ad_decoder, obj_list.select_related("author", "category"))
 
     @staticmethod
     def post(request):
         """ads a new ad"""
 
         ad = ADO.create(**AdModel.parse_raw(request.body).dict())
-        return pretty_json_response(ad_encoder(ad))
+        return pretty_json_response(ad_decoder(ad))
         # return smart_json_response(AdModel, ad)
 
 
@@ -86,7 +76,7 @@ class AdListView(ListView):
 
         super().get(request, *args, **kwargs)
         return pretty_json_response(
-            [ad_encoder(ad) for ad in self.get_context_data()["object_list"]]
+            [ad_decoder(ad) for ad in self.get_context_data()["object_list"]]
         )
         # return smart_json_response(AdModel, self.get_context_data()["object_list"])
 
@@ -97,7 +87,7 @@ class AdDetailView(DetailView):
     def get(self, request, *args, **kwargs) -> JsonResponse:
         """shows an ad"""
 
-        return pretty_json_response(ad_encoder(self.get_object()))
+        return pretty_json_response(ad_decoder(self.get_object()))
         # return smart_json_response(AdModel, self.get_object())
 
 # вариант с UpdateView, но я считаю, что в нашем случае лучше просто взять View + метод update (см. код ниже)
@@ -121,7 +111,7 @@ class AdUpdateView(View):
         """updates an ad"""
 
         obj = patch_shortcut(request, pk, model=Ad, schema=AdUpdateModel)
-        return pretty_json_response(ad_encoder(obj))
+        return pretty_json_response(ad_decoder(obj))
         # return smart_json_response(AdModel, obj)
 
         # # 1 --------------
@@ -211,7 +201,7 @@ class AdImageUpdateView(UpdateView):
         self.object.image = request.FILES["image"]
         self.object.save()
 
-        return smart_json_response(ad_encoder, self.object)
+        return smart_json_response(ad_decoder, self.object)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -227,24 +217,7 @@ class AdDeleteView(DeleteView):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class AdHTTPJsonView(View):
-    @staticmethod
-    def get(request) -> HttpResponse:
-        """shows all ads as json using html"""
-
-        res_obj = ADO.filter(name__iregex=name) if (name := request.GET.get("name", None)) else ADO.all()
-        s_dicts = [AdModel.from_orm(ad).dict(include={"pk", "name", "price"}) for ad in res_obj]
-
-        # an attempt to serialize pydantic models
-        # s_dicts = [{"item": AdModel.from_orm(ad)} for ad in res_obj]
-        # s_dicts = AdsModel.from_orm(s_dicts)
-
-        s = json.dumps(s_dicts, ensure_ascii=False, indent=2)
-        return HttpResponse(s, content_type="text/plain; charset=utf-8")
-
-
-@method_decorator(csrf_exempt, name="dispatch")
-class AdHTTPView(View):
+class AdHTMLView(View):
     @staticmethod
     def get(request) -> HttpResponse:
         """shows all ads using an html template"""
@@ -253,18 +226,8 @@ class AdHTTPView(View):
 
 
 # shows an ad using an html template
-class AdHTTPDetailView(DetailView):
+class AdHTMLDetailView(DetailView):
     model = Ad
-
-
-class AdHTTPJsonDetailView(DetailView):
-    model = Ad
-
-    def get(self, request, *args, **kwargs) -> HttpResponse:
-        """shows a json response as html"""
-
-        s = AdModel.from_orm(self.get_object()).json(ensure_ascii=False, indent="\t")
-        return HttpResponse(s, content_type="text/plain; charset=utf-8")
 
 
 # я не стал переделывать на ListView и CreateView, так как не вижу в этом никакой эффективности

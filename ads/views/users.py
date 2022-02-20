@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import DetailView, CreateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Q
 
 from skyvito.settings import TOTAL_ON_PAGE
 
@@ -13,7 +13,7 @@ from ads.models import User, UserModel, UserUpdateModel, USERO, LOCO
 from ads.utils import smart_json_response, patch_shortcut, pretty_json_response, update_from_dict, SmartPaginator
 
 
-def user_encoder(data):
+def user_decoder(data):
     """converts user object into a dict"""
 
     return {
@@ -24,14 +24,12 @@ def user_encoder(data):
         "role": data.role,
         "age": data.age,
         "locations": [loc.name for loc in data.locations.all()],
-        # "total_ads": data.total_ads
-        # "locations": [{"name": loc.name} for loc in data.locations.all()]
     }
 
 
-def user_encoder_plus(data):
-    """converts user object into a dict"""
-    res = user_encoder(data)
+def user_decoder_plus(data):
+    """user+decoder + total_ads"""
+    res = user_decoder(data)
     res["total_ads"] = data.total_ads
     return res
 
@@ -49,11 +47,11 @@ class UserView(View):
 
         # if paginated
         if page_number := request.GET.get("page"):
-            paginator = SmartPaginator(obj_list, TOTAL_ON_PAGE, schema=user_encoder_plus)
+            paginator = SmartPaginator(obj_list, TOTAL_ON_PAGE, schema=user_decoder_plus)
             return pretty_json_response(paginator.get_page(page_number))
 
         # if not paginated
-        return smart_json_response(user_encoder_plus, obj_list)
+        return smart_json_response(user_decoder_plus, obj_list)
         # следующая строчка не работает, так как я не разобрался с many2many в pydantic
         # return smart_json_response(UserModel, USERO.all())
 
@@ -76,16 +74,16 @@ class UserView(View):
             user.full_clean()
             user.save()
 
-        return pretty_json_response(user_encoder(user))
+        return pretty_json_response(user_decoder(user))
 
 
 class UserDetailView(DetailView):
     model = User
 
-    def get(self, request, *args, **kwargs):  # ads/user/pk/
+    def get(self, request, *args, **kwargs):  # GET ads/user/pk/
         """shows a user"""
 
-        return pretty_json_response(user_encoder(self.get_object()))
+        return pretty_json_response(user_decoder(self.get_object()))
         # return smart_json_response(UserModel, self.get_object())
 
 
@@ -94,7 +92,7 @@ class UserCreateView(CreateView):
     model = User
     fields = ["username", "first_name", "last_name", "role", "age", "locations"]
 
-    def post(self, request, *args, **kwargs):  # ads/user/create/
+    def post(self, request, *args, **kwargs):  # POST ads/user/create/
         super().post(request, *args, **kwargs)
         """ads a new user"""
 
@@ -115,14 +113,14 @@ class UserCreateView(CreateView):
             user.full_clean()
             user.save()
 
-        return pretty_json_response(user_encoder(user))
+        return pretty_json_response(user_decoder(user))
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class UserUpdateView(View):
 
     @staticmethod
-    def patch(request, pk):  # ads/ad/pk/update/
+    def patch(request, pk):  # PATCH ads/ad/pk/update/
         """updates a user"""
 
         # обновляем все поля, кроме locations (я не смог это реализовать в pydantic – эти поля будем писать отдельно)
@@ -137,7 +135,7 @@ class UserUpdateView(View):
             user.full_clean()
             user.save()
 
-        return pretty_json_response(user_encoder(user))
+        return pretty_json_response(user_decoder(user))
 
         # эти строчки можно будет использовать, когда я разберусь с pydantic
         # obj = patch_shortcut(request, pk, model=Ad, schema=AdUpdateModel)
@@ -149,7 +147,7 @@ class UserDeleteView(DeleteView):
     model = User
     success_url = "/"
 
-    def delete(self, request, *args, **kwargs):  # ads/user/pk/delete/
+    def delete(self, request, *args, **kwargs):  # DELETE ads/user/pk/delete/
         """deletes a user"""
 
         super().delete(request, *args, **kwargs)

@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 
-from ads import views
+from ads.backup import views
 from skyvito import settings
 
 urlpatterns = [

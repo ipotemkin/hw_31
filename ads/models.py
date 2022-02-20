@@ -1,17 +1,13 @@
-# TODO to make age field > 0
-
-from typing import Optional, Union
+from typing import Optional
 from pydantic import BaseModel, Field, Extra, constr
 from django.db import models
 
 
 class Ad(models.Model):
     name = models.CharField(max_length=100, verbose_name="Объявление")
-    # author = models.CharField(max_length=100, verbose_name="Автор")
     author = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name="Автор")
     price = models.PositiveIntegerField(verbose_name="Цена")
     description = models.CharField(max_length=1000, verbose_name="Описание", null=True, blank=True)
-    # address = models.CharField(max_length=120, verbose_name="Адрес")
     is_published = models.BooleanField(default=False, verbose_name="Опубликован или нет")
     category = models.ForeignKey('Cat', on_delete=models.PROTECT, verbose_name="Категория")
     image = models.ImageField(upload_to="img/", null=True)
@@ -34,7 +30,7 @@ class Cat(models.Model):
     class Meta:
         verbose_name_plural = "Категории"
         verbose_name = "Категория"
-        # ordering = ["name"]
+        ordering = ["name"]
 
 
 class Location(models.Model):
@@ -78,7 +74,6 @@ class AdModel(BaseModelConfig):
     author_id: int = Field(alias="author_id")
     price: int
     description: Optional[str]
-    # address: str
     is_published: bool = False
     category_id: int  # = Field(alias="category_id")
 
@@ -88,7 +83,6 @@ class AdUpdateModel(BaseModelConfig):
     author_id: Optional[int]
     price: Optional[int]
     description: Optional[str]
-    # address: Optional[str]
     is_published: Optional[bool]
     category_id: Optional[int]  # = Field(alias="category_id")
 

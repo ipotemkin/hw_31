@@ -1,6 +1,4 @@
-from typing import Union, Callable
-
-from pydantic import BaseModel
+from typing import Union
 
 from django.http import JsonResponse, Http404
 from django.core.paginator import Paginator
