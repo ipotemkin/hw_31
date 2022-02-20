@@ -9,7 +9,7 @@ class Ad(models.Model):
     name = models.CharField(max_length=100, verbose_name="Объявление")
     # author = models.CharField(max_length=100, verbose_name="Автор")
     author = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name="Автор")
-    price = models.IntegerField(verbose_name="Цена")
+    price = models.PositiveIntegerField(verbose_name="Цена")
     description = models.CharField(max_length=1000, verbose_name="Описание", null=True, blank=True)
     # address = models.CharField(max_length=120, verbose_name="Адрес")
     is_published = models.BooleanField(default=False, verbose_name="Опубликован или нет")
@@ -54,7 +54,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Имя")
     last_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Фамилия")
     role = models.CharField(max_length=20, null=True, blank=True, verbose_name="Роль")
-    age = models.SmallIntegerField(null=True, blank=True, verbose_name="Возраст")
+    age = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="Возраст")
     locations = models.ManyToManyField(Location)
 
     def __str__(self):
