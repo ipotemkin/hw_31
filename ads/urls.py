@@ -4,7 +4,6 @@ from django.urls import path
 
 
 urlpatterns = [
-    path("", views.index, name="index"),
     # ad
     path("ad/<int:pk>/update/", views.AdUpdateView.as_view(), name="ad_update"),
     path("ad/<int:pk>/delete/", views.AdDeleteView.as_view(), name="ad_delete"),
