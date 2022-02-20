@@ -10,6 +10,7 @@ Django = "^4.0.2"
 pydantic = "^1.9.0"
 SQLAlchemy = "^1.4.31"
 Pillow = "^9.0.1"
+psycopg2 = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
