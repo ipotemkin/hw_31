@@ -82,28 +82,6 @@ def patch_shortcut(request, pk, model, schema):
     return obj_query.first()
 
 
-# TODO to delete on release
-def format_paginated_response(object_lst, page_obj):
-    """deprecated after SmartPaginator"""
-
-    return {
-        "items": object_lst,
-        "total": page_obj.paginator.count,
-        "per_page": page_obj.paginator.per_page,
-        "num_pages": page_obj.paginator.num_pages
-    }
-
-
-# TODO to delete on release
-def get_paginated_response(object_list, per_page, page_number, schema):
-    """deprecated after SmartPaginator"""
-
-    paginator = Paginator(object_list, per_page)
-    page_obj = paginator.get_page(page_number)
-    page_obj_list = [schema.from_orm(ad).dict() for ad in page_obj]
-    return format_paginated_response(page_obj_list, page_obj)
-
-
 class SmartPaginator(Paginator):
     """
     Ads to Django Paginator a specified output format, based on a specified pydantic schema
