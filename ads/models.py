@@ -14,7 +14,7 @@ class Ad(models.Model):
     address = models.CharField(max_length=120, verbose_name="Адрес")
     is_published = models.BooleanField(default=False, verbose_name="Опубликован или нет")
     category = models.ForeignKey('Cat', on_delete=models.PROTECT, verbose_name="Категория")
-    image = models.ImageField(upload_to="img/")
+    image = models.ImageField(upload_to="img/", null=True)
 
     class Meta:
         verbose_name_plural = "Объявления"

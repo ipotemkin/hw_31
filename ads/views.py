@@ -42,7 +42,8 @@ def ad_encoder(data):
         "address": data.address,
         "is_published": data.is_published,
         "category_id": data.category_id,
-        "category": data.category.name
+        "category": data.category.name,
+        "image": data.image.url if data.image else "No picture yet"
     }
 
 
@@ -198,6 +199,19 @@ class AdUpdateView(View):
         # то можно сделать вывод, что вариант с update быстрее. Мануал django тоже пишет, что update быстрее
 
         # return smart_json_response(AdModel, obj_query.first())
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class AdImageUpdateView(UpdateView):
+    model = Ad
+    fields = ["image"]
+
+    def post(self, request, *args, **kwargs):  # ads/ad/pk/upload_image/
+        self.object = self.get_object()
+        self.object.image = request.FILES["image"]
+        self.object.save()
+
+        return smart_json_response(ad_encoder, self.object)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

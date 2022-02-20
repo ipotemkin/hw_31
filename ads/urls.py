@@ -8,6 +8,7 @@ urlpatterns = [
     # ad
     path("ad/<int:pk>/update/", views.AdUpdateView.as_view(), name="ad_update"),
     path("ad/<int:pk>/delete/", views.AdDeleteView.as_view(), name="ad_delete"),
+    path("ad/<int:pk>/upload_image/", views.AdImageUpdateView.as_view(), name="ad_upload_image"),
     path("ad/<int:pk>/", views.AdDetailView.as_view(), name="ad"),
     path("ad/", views.AdView.as_view(), name="ads_all"),
     path("ads/", views.AdListView.as_view(), name="ads_list"),
