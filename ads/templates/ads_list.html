@@ -8,22 +8,28 @@
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body class="board">
-<!--    <h2>Объявления:</h2><hr>-->
     {% for ad in ads %}
     <a href="{{ ad.pk }}/">
         <div class="card">
-            <h3>{{ ad.name }}</h3>
-            <h3>Цена: {{ ad.price }} руб.</h3>
-            <p><b>Продавец:</b> {{ ad.author }}</p>
-            <p><b>Описание:</b><br>{{ ad.description | truncatechars:200 }}</p>
+            <div>
+                {% if ad.image %}
+                    <img src="{{ ad.image.url }}" style="object-fit: cover; width: 300px; max-height: 190px; border-radius: 8px 8px 0 0; image-size: cover;" alt="No picture yet">
+                {% endif %}
+            </div>
+            <div style="padding: 10px;">
+                {% if ad.image %}
+                    <h3>{{ ad.name | truncatechars:26 }}</h3>
+                {% else %}
+                    <h3>{{ ad.name | truncatechars:46 }}</h3>
+                {% endif %}
+                <h3>Цена: {{ ad.price }} руб.</h3>
+                {% if not ad.image %}
+                    <p><b>Продавец:</b> {{ ad.author }}</p>
+                    <p><b>Описание:</b><br>{{ ad.description | truncatechars:160 }}</p>
+                {% endif %}
+            </div>
         </div>
     </a>
     {% endfor %}
-<!--    <script>-->
-<!--        function cardOnClick() {-->
-<!--            console.log("test");-->
-<!--            location.href = '/ads/ad/';-->
-<!--        }-->
-<!--    </script>-->
 </body>
 </html>

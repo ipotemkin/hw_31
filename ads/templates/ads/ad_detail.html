@@ -6,14 +6,30 @@
     <meta charset="UTF-8">
     <title>Объявления</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        .ad-box {
+            display: flex;
+            gap: 32px;
+<!--            height: 200px;-->
+        }
+
+        .image-container {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
 </head>
 <body>
-    <h2>Объявления:</h2><hr>
-    <div>
-        <h3>{{ ad.name }}: {{ ad.price }}</h3>
-<!--        <p>Цена: {{ ad.price }}</p>-->
-        <p>Продавец: {{ ad.author }}</p>
-        <p>Описание: {{ ad.description }}</p><hr>
+    <div class="ad-box">
+        {% if ad.image %}
+        <img class="image-container" src="{{ ad.image.url }}" alt="No picture yet">
+        {% endif %}
+        <div>
+            <h3>{{ ad.name }}. Цена: {{ ad.price }} руб</h3>
+            <p>Продавец: {{ ad.author }}</p>
+            <p>Описание: {{ ad.description }}</p>
+        </div>
     </div>
 </body>
 </html>
