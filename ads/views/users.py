@@ -42,8 +42,7 @@ class UserView(View):
 
         obj_list = USERO.all().prefetch_related("locations").annotate(
             total_ads=Count('ad__is_published', filter=Q(ad__is_published=True))
-        )
-        # .order_by("-total_ads")
+        ).order_by("username")
 
         # if paginated
         if page_number := request.GET.get("page"):
@@ -56,15 +55,10 @@ class UserView(View):
         # return smart_json_response(UserModel, USERO.all())
 
     @staticmethod
-    def post(request):  # POST ads/user/pk
+    def post(request):  # POST ads/user/
         """ads a new user"""
 
-        # ad = ADO.create(**AdModel.parse_raw(request.body).dict())
-        # return smart_json_response(AdModel, ad)
-
         user_data = json.loads(request.body)
-
-        # user = User(**UserModel.parse_obj(user_data).dict(exclude_unset=True))
         user = USERO.create(**UserModel.parse_obj(user_data).dict(exclude_unset=True))
 
         if locations := user_data.get("locations"):
@@ -95,9 +89,6 @@ class UserCreateView(CreateView):
     def post(self, request, *args, **kwargs):  # POST ads/user/create/
         super().post(request, *args, **kwargs)
         """ads a new user"""
-
-        # ad = ADO.create(**AdModel.parse_raw(request.body).dict())
-        # return smart_json_response(AdModel, ad)
 
         user_data = json.loads(request.body)
 
