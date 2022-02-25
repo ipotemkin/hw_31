@@ -163,7 +163,13 @@ URLS realized:
 >> `DELETE /ad/id/delete/`
 
 > **Cписок всех категорий**
->> `GET /cat/`
+>> `GET /cats/`  
+> Доступна фильтрация по названию:  
+> `GET /cat/?search=кот` (ищет все вхождения 'кот' в любом регистре) либо  
+> `GET /cat/?search=кот&search=песик` (ищет все вхождения 'кот' ЛИБО 'песик' в любом регистре)
+> Доступна сортировка:  
+> 'GET /cat/?ordering=name' - сортировка по полю name по возрастанию  
+> 'GET /cat/?ordering=-name' - сортировка по полю name по убыванию
 > ```json
 > [
 >    {
@@ -178,7 +184,7 @@ URLS realized:
 > ```
 
 > **Категория с указанным ID**
->> `GET /cat/id/`
+>> `GET /cats/id/`
 > ```json
 >    {
 >        "pk": 1,
@@ -187,7 +193,7 @@ URLS realized:
 > ```
 
 > **Добавить категорию**
->> `POST /cat/`
+>> `POST /cats/`
 > ```json
 >    {
 >        "name": "Котики"
@@ -196,7 +202,7 @@ URLS realized:
 
 
 > **Изменить категорию**
->> `PATCH /cat/id/update`
+>> `PATCH /cats/id/update`
 > ```json
 >    {
 >        "name": "Котики"
@@ -204,7 +210,7 @@ URLS realized:
 > ```
 
 > **Удалить категорию**
->> `DELETE /cat/id/delete`
+>> `DELETE /cats/id/delete`
 
 
 > **Cписок всех пользователей (возможна пагинация)**
