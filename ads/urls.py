@@ -19,11 +19,6 @@ urlpatterns = [
     path("api/", include(router.urls)),
 
     # user
-    path("user/<int:pk>/update/", users.UserUpdateView.as_view(), name="user_update"),
-    path("user/<int:pk>/delete/", users.UserDeleteView.as_view(), name="user_delete"),
-    path("user/<int:pk>/", users.UserDetailView.as_view(), name="user"),
-    path("user/create/", users.UserCreateView.as_view(), name="user_create"),
-    path("user/", users.UserView.as_view(), name="users_all"),
     path("api/users/create/", users.UserCreateAPIView.as_view(), name="api_users_create"),
     path("api/users/<int:pk>/delete/", users.UserDeleteAPIView.as_view(), name="api_users_delete"),
     path("api/users/<int:pk>/update/", users.UserUpdateAPIView.as_view(), name="api_users_update"),
