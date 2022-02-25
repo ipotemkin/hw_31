@@ -14,17 +14,17 @@ urlpatterns = [
     path("ad/<int:pk>/upload_image/", ads.AdImageUpdateView.as_view(), name="ad_upload_image"),
     path("ad/<int:pk>/", ads.AdDetailView.as_view(), name="ad"),
     path("ad/", ads.AdView.as_view(), name="ads_all"),
-    path("ads/", ads.AdListView.as_view(), name="ads_list"),
+    path("ads/", ads.AdListView.as_view(), name="ads_list"),  # just for a test to learn ListView
 
-    # cat
+    # categories & locations
     path("", include(router.urls)),
 
     # user
-    path("api/users/create/", users.UserCreateAPIView.as_view(), name="api_users_create"),
-    path("api/users/<int:pk>/delete/", users.UserDeleteAPIView.as_view(), name="api_users_delete"),
-    path("api/users/<int:pk>/update/", users.UserUpdateAPIView.as_view(), name="api_users_update"),
-    path("api/users/", users.UserListAPIView.as_view(), name="api_users_all"),
-    path("api/users/<int:pk>/", users.UserAPIView.as_view(), name="api_users"),
+    path("users/create/", users.UserCreateAPIView.as_view(), name="api_users_create"),
+    path("users/<int:pk>/delete/", users.UserDeleteAPIView.as_view(), name="api_users_delete"),
+    path("users/<int:pk>/update/", users.UserUpdateAPIView.as_view(), name="api_users_update"),
+    path("users/", users.UserListAPIView.as_view(), name="api_users_all"),
+    path("users/<int:pk>/", users.UserAPIView.as_view(), name="api_users"),
 
     # additional urls
     path("ad/html/<int:pk>/", ads.AdHTMLDetailView.as_view(), name="ad_http_detail"),

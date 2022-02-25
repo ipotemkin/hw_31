@@ -12,7 +12,15 @@ URLS realized:
 > ``` 
 
 > **Cписок всех объявлений**
->> `GET /ads/ad/` или `GET /ads/ads/`
+>> `GET /ad/` или `GET /ads/`  
+> 
+> **Возможна пагинация и фильтрация:**  
+> - по имени объявления: GET /ad/?text=кот  
+> - по ID категории: GET /ad/?cat=1
+> - по названию локации: GET /ad/?location=Москва
+> - по минимальной цене: GET /ad/?price_from=1000
+> - по максимальной цене: GET /ad/?price_to=5000
+> - по любому набору, указанных критериев
 > ```json
 >  [
 >    {
@@ -43,7 +51,7 @@ URLS realized:
 >```
 
 > **Cписок всех объявлений с пагинацией**
->> `GET /ads/ad/?page=2` или `GET /ads/ads/?page=2`
+>> `GET /ad/?page=2` или `GET /ads/?page=2`
 > ```json
 >  {
 >    "items": [{
@@ -77,10 +85,10 @@ URLS realized:
 >```
 
 > **Cписок всех объявлений в html**
->> `GET /ads/ad/html`
+>> `GET /ad/html`
 
 > **Объявление с указанным ID**
->> `GET /ads/ad/id`
+>> `GET /ad/id/`
 > ```json
 >    {
 >       "pk": 1,
@@ -97,11 +105,11 @@ URLS realized:
 > ```
 
 > **Объявление с указанным ID в html**
->> `GET /ads/ad/html/id`
+>> `GET /ad/html/id/`
 
 
 > **Добавить объявление**
->> `POST /ads/ad/`
+>> `POST /ad/`
 > ```json
 >    {
 >       "name": "Сибирская котята, 3 месяца",
@@ -118,7 +126,7 @@ URLS realized:
 
 
 > **Изменить объявление**
->> `PATCH /ads/ad/id/update`
+>> `PATCH /ad/id/update/`
 > ```json
 >    {
 >       "name": "Сибирская котята, 3 месяца",
@@ -134,7 +142,7 @@ URLS realized:
 > ```
 
 > **Добавить/обновить картинку в объявление**
->> `POST /ads/ad/id/upload_image`  
+>> `POST /ad/id/upload_image/`  
 > `ContentType 'multipart/form-data'`  
 > `FILES: "image"`
 > ```json
@@ -152,10 +160,10 @@ URLS realized:
 > ```
 
 > **Удалить объявление**
->> `DELETE /ads/ad/id/delete/`
+>> `DELETE /ad/id/delete/`
 
 > **Cписок всех категорий**
->> `GET /ads/cat/`
+>> `GET /cat/`
 > ```json
 > [
 >    {
@@ -170,7 +178,7 @@ URLS realized:
 > ```
 
 > **Категория с указанным ID**
->> `GET /ads/cat/id/`
+>> `GET /cat/id/`
 > ```json
 >    {
 >        "pk": 1,
@@ -179,7 +187,7 @@ URLS realized:
 > ```
 
 > **Добавить категорию**
->> `POST /ads/cat/`
+>> `POST /cat/`
 > ```json
 >    {
 >        "name": "Котики"
@@ -188,7 +196,7 @@ URLS realized:
 
 
 > **Изменить категорию**
->> `PATCH /ads/cat/id/update`
+>> `PATCH /cat/id/update`
 > ```json
 >    {
 >        "name": "Котики"
@@ -196,11 +204,11 @@ URLS realized:
 > ```
 
 > **Удалить категорию**
->> `DELETE /ads/cat/id/delete`
+>> `DELETE /cat/id/delete`
 
 
 > **Cписок всех пользователей (возможна пагинация)**
->> `GET /ads/user/`
+>> `GET /users/`
 > ```json
 > [
 >   {
@@ -230,7 +238,7 @@ URLS realized:
 > ```
 
 > **Пользователь с указанным ID**
->> `GET /ads/user/id/`
+>> `GET /users/id/`
 > ```json
 > {
 >    "id": 5,
@@ -247,13 +255,49 @@ URLS realized:
 > ```
 
 > **Добавить пользователя**
->> `POST /ads/user/create`
+>> `POST /users/create`
 
 > **Изменить пользователя**
->> `PATCH /ads/user/id/update`
+>> `PATCH /users/id/update`
 
 > **Удалить пользователя**
->> `DELETE /ads/user/id/delete`
+>> `DELETE /users/id/delete`
+
+
+> **Cписок всех локаций (возможна пагинация)**
+>> `GET /locations/`
+> ```json
+> [
+>   {
+>       "id": 1,
+>       "name": "Москва"
+>   },
+>  {
+>       "id": 2,
+>       "name": "Питер"
+>  }
+> ]
+> ```
+
+> **Локация с указанным ID**
+>> `GET /users/id/`
+> ```json
+> {
+>    "id": 1,
+>    "name": "Москва"
+> }
+> ```
+
+> **Добавить локацию**
+>> `POST /locations/create`
+
+> **Изменить локацию**
+>> `PATCH /locations/id/update`
+
+> **Удалить локацию**
+>> `DELETE /locations/id/delete`
+
+
 
 Database connection and data loading
 ------------
