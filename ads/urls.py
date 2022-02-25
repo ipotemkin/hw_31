@@ -5,6 +5,7 @@ from django.urls import path, include
 
 router = DefaultRouter()  # SimpleRouter
 router.register('cats', categories.CatAPIViewSet)
+router.register('locations', users.LocAPIViewSet)
 
 urlpatterns = [
     # ad
@@ -16,7 +17,7 @@ urlpatterns = [
     path("ads/", ads.AdListView.as_view(), name="ads_list"),
 
     # cat
-    path("api/", include(router.urls)),
+    path("", include(router.urls)),
 
     # user
     path("api/users/create/", users.UserCreateAPIView.as_view(), name="api_users_create"),

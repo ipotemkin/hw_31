@@ -17,8 +17,9 @@ class CatAPIViewSet(ModelViewSet):
     serializer_class = CatSerializer
 
     def list(self, request, *args, **kwargs):
+        """Добавлены функции для поиска по названию категории и сортировка"""
+
         if search := request.GET.getlist('search'):  # for searching in field name
-            # self.queryset = self.queryset.filter(name__icontains=search)
             query = None
             for s in search:
                 query = query | Q(name__icontains=s) if query else Q(name__icontains=s)

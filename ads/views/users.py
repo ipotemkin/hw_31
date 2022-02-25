@@ -6,6 +6,7 @@ from rest_framework.generics import (
     DestroyAPIView,
     UpdateAPIView
 )
+from rest_framework.viewsets import ModelViewSet
 
 from ads.models import User, USERO, LOCO, Location
 
@@ -14,6 +15,11 @@ class LocSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ["name"]
+
+
+class LocAPIViewSet(ModelViewSet):
+    queryset = LOCO.all()
+    serializer_class = LocSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
