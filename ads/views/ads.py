@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -37,13 +38,36 @@ def index(request):  # noqa
     return JsonResponse({"status": "ok"})
 
 
+def build_query(request):
+    """builds a query with the specified query params"""
+
+    query = Q()
+    if search_cat := request.GET.get('cat'):  # for filtering by category_id
+        query |= Q(category_id=search_cat)
+
+    if search := request.GET.get('text'):
+        query &= Q(name__icontains=search)
+
+    if search_loc := request.GET.get('location'):
+        query &= Q(author__locations__name__icontains=search_loc)
+
+    if search_price_from := request.GET.get('price_from'):
+        query &= Q(price__gte=search_price_from)
+
+    if search_price_to := request.GET.get('price_to'):
+        query &= Q(price__lte=search_price_to)
+
+    return query
+
+
 @method_decorator(csrf_exempt, name="dispatch")
 class AdView(View):  # shows all ads and create an ad
     @staticmethod
     def get(request):  # GET ads/ad/
         """shows all ads, paginated if page number is present in query params"""
 
-        obj_list = ADO.all()
+        query = build_query(request)
+        obj_list = ADO.select_related("author", "category").filter(query)
 
         # if paginated
         if page_number := request.GET.get("page"):
@@ -51,7 +75,7 @@ class AdView(View):  # shows all ads and create an ad
             return pretty_json_response(paginator.get_page(page_number))
 
         # if not paginated
-        return smart_json_response(ad_decoder, obj_list.select_related("author", "category"))
+        return smart_json_response(ad_decoder, obj_list)
 
     @staticmethod
     def post(request):  # POST ads/ad/
@@ -70,11 +94,12 @@ class AdListView(ListView):
     def get(self, request, *args, **kwargs):  # GET ads/ads/
         """shows all ads, paginated"""
 
-        super().get(request, *args, **kwargs)
-        return pretty_json_response(
-            [ad_decoder(ad) for ad in self.get_context_data()["object_list"]]
-        )
-        # return smart_json_response(AdModel, self.get_context_data()["object_list"])
+        if query := build_query(request):
+            self.queryset = self.get_queryset().select_related("author", "category").filter(query)
+
+        super().get(request, *args, **kwargs)  # to create context with a built-in paginator
+
+        return smart_json_response(ad_decoder, self.get_context_data()["object_list"])
 
 
 class AdDetailView(DetailView):
