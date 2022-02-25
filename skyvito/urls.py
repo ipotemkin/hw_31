@@ -17,12 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 
-from ads.backup import views
+from ads.views import ads
 from skyvito import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", views.index, name="index"),
+    path("", ads.index, name="index"),
     path("", include("ads.urls")),
     # path("ads/", include("ads.urls")),
     path("api-auth/", include('rest_framework.urls')),

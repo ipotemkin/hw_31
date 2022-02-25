@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Field, Extra, constr
+from pydantic import BaseModel, Field, Extra
 from django.db import models
 
 
@@ -85,45 +85,6 @@ class AdUpdateModel(BaseModelConfig):
     description: Optional[str]
     is_published: Optional[bool]
     category_id: Optional[int]  # = Field(alias="category_id")
-
-
-class CatModel(BaseModelConfig):
-    pk: Optional[int] = Field(alias="id")
-    name: constr(max_length=120)
-
-
-class CatUpdateModel(BaseModelConfig):
-    name: Optional[constr(max_length=120)]
-
-
-class UserModel(BaseModel):
-    pk: Optional[int] = Field(alias="id")
-    username: constr(max_length=30)
-    first_name: Optional[constr(max_length=20)]
-    last_name: Optional[constr(max_length=20)]
-    role: Optional[constr(max_length=20)]
-    age: Optional[int]
-    # locations: models.Manager
-
-    class Config:
-        orm_mode = True
-        arbitrary_types_allowed = True
-        # fields = {'locations': {'exclude': True}}
-        json_encoders = {
-            models.Manager: lambda x: list(x.all().values_list('name', flat=True)),
-        }
-
-
-class UserUpdateModel(BaseModelConfig):
-    username: Optional[constr(max_length=30)]
-    first_name: Optional[constr(max_length=20)]
-    last_name: Optional[constr(max_length=20)]
-    role: Optional[constr(max_length=20)]
-    age: Optional[int]
-    locations: Optional[list]
-
-    class Config:
-        fields = {'locations': {'exclude': True}}
 
 # shortcuts
 ADO = Ad.objects  # noqa
