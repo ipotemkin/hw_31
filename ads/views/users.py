@@ -6,10 +6,12 @@ from django.views import View
 from django.views.generic import DetailView, CreateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count, Q
+from rest_framework import serializers
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView, UpdateAPIView
 
 from skyvito.settings import TOTAL_ON_PAGE
 
-from ads.models import User, UserModel, UserUpdateModel, USERO, LOCO
+from ads.models import User, UserModel, UserUpdateModel, USERO, LOCO, Location
 from ads.utils import smart_json_response, patch_shortcut, pretty_json_response, update_from_dict, SmartPaginator
 
 
@@ -143,3 +145,85 @@ class UserDeleteView(DeleteView):
 
         super().delete(request, *args, **kwargs)
         return JsonResponse({"status": "ok"}, status=200)
+
+
+class LocSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        # fields = "__all__"
+        fields = ["name"]
+
+
+class UserSerializer(serializers.ModelSerializer):
+    # locations = LocSerializer(many=True)
+    locations = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field="name"
+    )
+
+    class Meta:
+        model = User
+        fields = "__all__"
+        # exclude = ["locations"]
+
+
+class UserCreateUpdateSerializer(serializers.ModelSerializer):
+    # locations = LocSerializer(many=True)
+    locations = serializers.SlugRelatedField(
+        required=False,
+        many=True,
+        read_only=True,
+        slug_field="name"
+    )
+
+    class Meta:
+        model = User
+        fields = "__all__"
+        # exclude = ["id"]  # , "locations"]
+
+    # def is_valid(self, raise_exception=False):
+    #     self._locations = self.initial_data.pop("locations")
+    #     return super().is_valid(raise_exception=raise_exception)
+
+    def _create_update_locations(self, user):
+        if _locations := self.initial_data.get("locations"):
+            user.locations.set([])
+            for loc in _locations:
+                loc_obj, _ = LOCO.get_or_create(name=loc)
+                user.locations.add(loc_obj)
+            user.save()
+        return user
+
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        return self._create_update_locations(user)
+
+    def update(self, instance, validated_data):
+        user = super().update(instance, validated_data)
+        return self._create_update_locations(user)
+
+
+class UserListAPIView(ListAPIView):
+    queryset = USERO.all()
+    serializer_class = UserSerializer
+
+
+class UserAPIView(RetrieveAPIView):
+    queryset = USERO.all()
+    serializer_class = UserSerializer
+
+
+class UserCreateAPIView(CreateAPIView):
+    queryset = USERO.all()
+    serializer_class = UserCreateUpdateSerializer
+
+
+class UserUpdateAPIView(UpdateAPIView):
+    queryset = USERO.all()
+    serializer_class = UserCreateUpdateSerializer
+
+
+class UserDeleteAPIView(DestroyAPIView):
+    queryset = USERO.all()
+    serializer_class = UserSerializer
