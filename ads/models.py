@@ -1,4 +1,6 @@
 from typing import Optional
+
+from django.contrib.auth.models import AbstractUser
 from pydantic import BaseModel, Field, Extra
 from django.db import models
 
@@ -45,10 +47,10 @@ class Location(models.Model):
         ordering = ["name"]
 
 
-class User(models.Model):
-    username = models.CharField(max_length=30, verbose_name="Имя пользователя в системе")
-    first_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Имя")
-    last_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Фамилия")
+class User(AbstractUser):
+    # username = models.CharField(max_length=30, verbose_name="Имя пользователя в системе")
+    # first_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Имя")
+    # last_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Фамилия")
     role = models.CharField(max_length=20, null=True, blank=True, verbose_name="Роль")
     age = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="Возраст")
     locations = models.ManyToManyField(Location)
