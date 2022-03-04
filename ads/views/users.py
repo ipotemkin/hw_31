@@ -6,6 +6,7 @@ from rest_framework.generics import (
     DestroyAPIView,
     UpdateAPIView
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from ads.models import User, USERO, LOCO, Location
@@ -73,6 +74,7 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
 class UserListAPIView(ListAPIView):
     queryset = USERO.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class UserAPIView(RetrieveAPIView):

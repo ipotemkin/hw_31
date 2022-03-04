@@ -10,12 +10,17 @@ router.register('locations', users.LocAPIViewSet)
 
 urlpatterns = [
     # ad
-    path("ad/<int:pk>/update/", ads.AdUpdateView.as_view(), name="ad_update"),
-    path("ad/<int:pk>/delete/", ads.AdDeleteView.as_view(), name="ad_delete"),
-    path("ad/<int:pk>/upload_image/", ads.AdImageUpdateView.as_view(), name="ad_upload_image"),
-    path("ad/<int:pk>/", ads.AdDetailView.as_view(), name="ad"),
-    path("ad/", ads.AdView.as_view(), name="ads_all"),
-    path("ads/", ads.AdListView.as_view(), name="ads_list"),  # just for a test to learn ListView
+    # path("ad/<int:pk>/update/", ads.AdUpdateView.as_view(), name="ad_update"),
+    # path("ad/<int:pk>/delete/", ads.AdDeleteView.as_view(), name="ad_delete"),
+    # path("ad/<int:pk>/upload_image/", ads.AdImageUpdateView.as_view(), name="ad_upload_image"),
+    # path("ad/<int:pk>/", ads.AdDetailView.as_view(), name="ad"),
+    # path("ad/", ads.AdView.as_view(), name="ads_all"),
+    # path("ads/", ads.AdListView.as_view(), name="ads_list"),  # just for a test to learn ListView
+    path("ads/<int:pk>/", ads.AdAPIView.as_view()),
+    path("ads/", ads.AdListCreateAPIView.as_view()),
+    # path("ads/create/", ads.AdCreateAPIView.as_view()),
+    path("ads/<int:pk>/update/", ads.AdUpdateAPIView.as_view()),
+    path("ads/<int:pk>/delete/", ads.AdDeleteAPIView.as_view()),
 
     # categories & locations
     path("", include(router.urls)),
