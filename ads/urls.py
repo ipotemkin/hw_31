@@ -1,4 +1,5 @@
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from ads.views import ads, users, categories
 from django.urls import path, include
@@ -31,8 +32,8 @@ urlpatterns = [
     path("ad/html/", ads.AdHTMLView.as_view(), name="ad_http"),
 
     # tokens
-    # path('token/', TokenObtainPairView.as_view()),
-    # path('token/refresh/', TokenRefreshView.as_view()),
+    path('token/', TokenObtainPairView.as_view()),
+    path('token/refresh/', TokenRefreshView.as_view()),
 ]
 
 
