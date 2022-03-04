@@ -63,6 +63,12 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
         user = super().update(instance, validated_data)
         return self._create_update_locations(user)
 
+    def save(self):
+        user = super().save()
+        user.set_password(user.password)
+        user.save()
+        return user
+
 
 class UserListAPIView(ListAPIView):
     queryset = USERO.all()

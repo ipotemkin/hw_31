@@ -29,6 +29,10 @@ urlpatterns = [
     # additional urls
     path("ad/html/<int:pk>/", ads.AdHTMLDetailView.as_view(), name="ad_http_detail"),
     path("ad/html/", ads.AdHTMLView.as_view(), name="ad_http"),
+
+    # tokens
+    # path('token/', TokenObtainPairView.as_view()),
+    # path('token/refresh/', TokenRefreshView.as_view()),
 ]
 
 
