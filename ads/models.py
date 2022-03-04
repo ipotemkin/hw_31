@@ -48,15 +48,21 @@ class Location(models.Model):
 
 
 class User(AbstractUser):
-    # username = models.CharField(max_length=30, verbose_name="Имя пользователя в системе")
-    # first_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Имя")
-    # last_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Фамилия")
+# class User(models.Model):
+#     username = models.CharField(max_length=30, verbose_name="Имя пользователя в системе")
+#     first_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Имя")
+#     last_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Фамилия")
+
     role = models.CharField(max_length=20, null=True, blank=True, verbose_name="Роль")
     age = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="Возраст")
     locations = models.ManyToManyField(Location)
 
     def __str__(self):
         return self.username
+
+    # def save(self, *args, **kwargs):
+    #     self.set_password(self.password)
+    #     super().save()
 
     class Meta:
         verbose_name_plural = "Пользователи"
