@@ -5,18 +5,16 @@ from django.views import View
 from django.views.generic import DetailView, UpdateView
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from rest_framework import serializers
 from rest_framework.generics import (
     RetrieveAPIView,
-    ListAPIView,
     UpdateAPIView,
-    CreateAPIView,
     DestroyAPIView,
     ListCreateAPIView
 )
 
 from rest_framework.permissions import IsAuthenticated
 from ads.models import User, Ad, ADO
+from ads.serializers import AdSerializer
 
 
 def index(request):  # noqa
@@ -45,22 +43,6 @@ def build_query(request):
     return query
 
 
-class AuthorSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ["pk", "username"]
-        # fields = "__all__"
-
-
-class AdSerializer(serializers.ModelSerializer):
-    # author = AuthorSerializer()
-
-    class Meta:
-        model = Ad
-        fields = "__all__"
-
-
 class AdAPIView(RetrieveAPIView):
     queryset = ADO.all()
     serializer_class = AdSerializer
@@ -82,11 +64,6 @@ class AdListCreateAPIView(ListCreateAPIView):
             )
         return super().get(request, *args, **kwargs)
 
-
-# class AdCreateAPIView(CreateAPIView):
-#     queryset = ADO.all()
-#     serializer_class = AdSerializer
-#
 
 class AdUpdateAPIView(UpdateAPIView):
     queryset = ADO.all()
@@ -117,7 +94,6 @@ class AdImageUpdateView(UpdateView):
         self.object.image = request.FILES["image"]
         self.object.save()
 
-        # return smart_json_response(ad_decoder, self.object)
         return JsonResponse(AdSerializer(self.queryset, many=True).data)
 
 
