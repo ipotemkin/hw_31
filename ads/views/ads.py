@@ -67,7 +67,9 @@ class AdView(View):  # shows all ads and create an ad
         """shows all ads, paginated if page number is present in query params"""
 
         query = build_query(request)
-        obj_list = ADO.select_related("author", "category").filter(query)
+        obj_list = ADO.select_related("author", "category").filter(query).distinct()
+        # obj_list = ADO.select_related("author", "category").filter(query).order_by('pk').distinct('pk')
+        # obj_list = obj_list.order_by('-price')
 
         # if paginated
         if page_number := request.GET.get("page"):
@@ -95,7 +97,21 @@ class AdListView(ListView):
         """shows all ads, paginated"""
 
         if query := build_query(request):
-            self.queryset = self.get_queryset().select_related("author", "category").filter(query)
+            self.queryset = (
+                self.get_queryset()
+                    .select_related("author", "category")
+                    .filter(query)
+                    .order_by('pk')
+                    .distinct('pk')
+                    # .order_by('-price')
+            )
+            # self.queryset = (
+            #     self.get_queryset()
+            #         .select_related("author", "category")
+            #         .prefetch_related("location")
+            #         .filter(query)
+            # )
+            # print('here')
 
         super().get(request, *args, **kwargs)  # to create context with a built-in paginator
 
