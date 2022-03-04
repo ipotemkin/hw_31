@@ -48,12 +48,18 @@ class Location(models.Model):
 
 
 class User(AbstractUser):
+
+    USER = "user"
+    ADMIN = "admin"
+
+    ROLES = [(USER, "Пользователь"), (ADMIN, "Администратор")]
+
 # class User(models.Model):
 #     username = models.CharField(max_length=30, verbose_name="Имя пользователя в системе")
 #     first_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Имя")
 #     last_name = models.CharField(max_length=20, null=True, blank=True, verbose_name="Фамилия")
 
-    role = models.CharField(max_length=20, null=True, blank=True, verbose_name="Роль")
+    role = models.CharField(max_length=5, choices=ROLES, default=USER, verbose_name="Роль")
     age = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="Возраст")
     locations = models.ManyToManyField(Location)
 

@@ -46,13 +46,12 @@ def build_query(request):
 class AdAPIView(RetrieveAPIView):
     queryset = ADO.all()
     serializer_class = AdSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class AdListCreateAPIView(ListCreateAPIView):
     queryset = ADO.all()
     serializer_class = AdSerializer
-    # permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         if query := build_query(request):
@@ -68,18 +67,25 @@ class AdListCreateAPIView(ListCreateAPIView):
 class AdUpdateAPIView(UpdateAPIView):
     queryset = ADO.all()
     serializer_class = AdSerializer
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, *args, **kwargs):
+        if request.user.id == self.get_object().author.id or request.user.role == User.ADMIN:
+            return super().patch(request, *args, **kwargs)
+
+        return JsonResponse({"detail": "Permission denied"}, status=403)
 
 
 class AdDeleteAPIView(DestroyAPIView):
     queryset = ADO.all()
     serializer_class = AdSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, *args, **kwargs):
-        if request.user.id == self.get_object().author.id:
+        if request.user.id == self.get_object().author.id or request.user.role == User.ADMIN:
             return super().delete(request, *args, **kwargs)
 
-        return JsonResponse({"error": "Permission denied"}, status=403)
+        return JsonResponse({"detail": "Permission denied"}, status=403)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -90,9 +96,9 @@ class AdImageUpdateView(UpdateView):
     def post(self, request, *args, **kwargs):  # POST ads/ad/pk/upload_image/
         """ads/updates an image for the specified ad"""
 
-        self.object = self.get_object()
-        self.object.image = request.FILES["image"]
-        self.object.save()
+        obj = self.get_object()
+        obj.image = request.FILES["image"]
+        obj.save()
 
         return JsonResponse(AdSerializer(self.queryset, many=True).data)
 
