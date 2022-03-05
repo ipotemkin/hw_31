@@ -6,3 +6,5 @@ __pycache__
 .dockerignore
 docker-compose.yaml
 Dockerfile
+data/*
+test.sh

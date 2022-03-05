@@ -92,8 +92,7 @@ class AdImageUpdateView(UpdateView):
         obj = self.get_object()
         obj.image = request.FILES["image"]
         obj.save()
-
-        return JsonResponse(AdSerializer(self.queryset, many=True).data)
+        return JsonResponse(AdSerializer(obj).data)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
