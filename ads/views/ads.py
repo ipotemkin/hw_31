@@ -13,7 +13,8 @@ from rest_framework.generics import (
 )
 
 from rest_framework.permissions import IsAuthenticated
-from ads.models import User, Ad, ADO
+from ads.models import Ad, ADO
+from ads.permissions import AdUpdateDeletePermission
 from ads.serializers import AdSerializer
 
 
@@ -39,6 +40,10 @@ def build_query(request):
 
     if search_price_to := request.GET.get('price_to'):
         query &= Q(price__lte=search_price_to)
+
+    if username := request.GET.get('username'):
+        print(username)
+        query &= Q(author__username__icontains=username)
 
     return query
 
@@ -67,25 +72,13 @@ class AdListCreateAPIView(ListCreateAPIView):
 class AdUpdateAPIView(UpdateAPIView):
     queryset = ADO.all()
     serializer_class = AdSerializer
-    permission_classes = [IsAuthenticated]
-
-    def patch(self, request, *args, **kwargs):
-        if request.user.id == self.get_object().author.id or request.user.role == User.ADMIN:
-            return super().patch(request, *args, **kwargs)
-
-        return JsonResponse({"detail": "Permission denied"}, status=403)
+    permission_classes = [IsAuthenticated, AdUpdateDeletePermission]
 
 
 class AdDeleteAPIView(DestroyAPIView):
     queryset = ADO.all()
     serializer_class = AdSerializer
-    permission_classes = [IsAuthenticated]
-
-    def delete(self, request, *args, **kwargs):
-        if request.user.id == self.get_object().author.id or request.user.role == User.ADMIN:
-            return super().delete(request, *args, **kwargs)
-
-        return JsonResponse({"detail": "Permission denied"}, status=403)
+    permission_classes = [IsAuthenticated, AdUpdateDeletePermission]
 
 
 @method_decorator(csrf_exempt, name="dispatch")

@@ -1,19 +1,9 @@
 from rest_framework import serializers
 
-from ads.models import User, Ad, Cat, Location, LOCO
-
-
-class AuthorSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ["pk", "username"]
-        # fields = "__all__"
+from ads.models import User, Ad, Cat, Location, LOCO, Selection
 
 
 class AdSerializer(serializers.ModelSerializer):
-    # author = AuthorSerializer()
-
     class Meta:
         model = Ad
         fields = "__all__"
@@ -77,3 +67,18 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
         user.set_password(user.password)
         user.save()
         return user
+
+
+class SelectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Selection
+        fields = "__all__"
+
+
+class SelectionDetailSerializer(SelectionSerializer):
+    items = AdSerializer(many=True)
+
+
+class SelectionListSerializer(SelectionSerializer):
+    class Meta(SelectionSerializer.Meta):
+        fields = ["id", "name"]

@@ -1,13 +1,11 @@
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from ads.views import ads, users, categories
+from ads.views import ads, users, categories, selections
 from django.urls import path, include
 
 router = DefaultRouter()  # SimpleRouter
 router.register('cats', categories.CatAPIViewSet)
-router.register('locations', users.LocAPIViewSet)
-
 urlpatterns = [
     # ad
     # path("ad/<int:pk>/update/", ads.AdUpdateView.as_view(), name="ad_update"),
@@ -39,6 +37,14 @@ urlpatterns = [
     # tokens
     path('token/', TokenObtainPairView.as_view()),
     path('token/refresh/', TokenRefreshView.as_view()),
+
+    # selections
+    path("selections/create/", selections.SelectionCreateAPIView.as_view()),
+    path("selections/<int:pk>/", selections.SelectionAPIView.as_view()),
+    path("selections/", selections.SelectionListAPIView.as_view()),
+    path("selections/<int:pk>/update/", selections.SelectionUpdateAPIView.as_view()),
+    path("selections/<int:pk>/delete/", selections.SelectionDeleteAPIView.as_view()),
+
 ]
 
-
+router.register('locations', users.LocAPIViewSet)
