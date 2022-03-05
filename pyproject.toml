@@ -7,7 +7,6 @@ authors = ["ipotemkin <91094458+ipotemkin@users.noreply.github.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 Django = "^4.0.2"
-pydantic = "^1.9.0"
 Pillow = "^9.0.1"
 # psycopg2-binary = "^"
 psycopg2 = "^2.9.3"
