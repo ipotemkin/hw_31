@@ -69,6 +69,9 @@ class Selection(models.Model):
     owner = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Автор объявления")
     items = models.ManyToManyField(Ad)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name_plural = "Избранное"
         verbose_name = "Избранное"
