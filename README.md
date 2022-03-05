@@ -12,7 +12,7 @@ URLS realized:
 > ``` 
 
 > **Cписок всех объявлений**
->> `GET /ad/` или `GET /ads/`  
+>> `GET /ads/`  
 > 
 > **Возможна пагинация и фильтрация:**  
 > - по имени объявления: GET /ad/?text=кот  
@@ -51,32 +51,28 @@ URLS realized:
 >```
 
 > **Cписок всех объявлений с пагинацией**
->> `GET /ad/?page=2` или `GET /ads/?page=2`
+>> `GET /ads/?page=2`
 > ```json
 >  {
 >    "items": [{
 >       "pk": 1,
 >       "name": "Сибирская котята, 3 месяца",
->       "author_id": 1,
->       "author": "Павел",
+>       "author": 1,
 >       "price": 2500,
 >       "description": "Продаю сибирских котят, возраст 3 месяца.\nОчень милые и ручные.\nЛоточек знают на пятерку, кушают премиум корм.\nЖдут любящих и заботливых хояев. Больше фотографий отправлю в личку, цена указана за 1 котенка.",
 >       "is_published": true,
->       "category_id": 1,
->       "category": "Котики",
+>       "category": 1,
 >       "image": "/media/img/pic1.jpg"
 >    },
 >    {
 >       "pk": 2,
 >       "name": "Стратегия голубого океана\n",
->       "author_id": 5,
->       "author": "Ирина",
+>       "author": 5,
 >       "price": 650,
 >       "description": "Твердый переплет, состояние прекрасное. По всем вопросам лучше писать, звонок могу не услышать. Передам у м. Студенческая.",
 >       "is_published": true,
->       "category_id": 3,
->       "category": "Книги",
->       "image": "No picture yet"
+>       "category": 3,
+>       "image": null
 >    }],
 >   "total": 23,
 >   "per_page": 2,
@@ -85,42 +81,38 @@ URLS realized:
 >```
 
 > **Cписок всех объявлений в html**
->> `GET /ad/html`
+>> `GET /ads/html`
 
 > **Объявление с указанным ID**
->> `GET /ad/id/`
+>> `GET /ads/id/`
 > ```json
 >    {
 >       "pk": 1,
 >       "name": "Сибирская котята, 3 месяца",
->       "author_id": 1,
->       "author": "Павел",
+>       "author": 1,
 >       "price": 2500,
 >       "description": "Продаю сибирских котят, возвраст 3 месяца.\nОчень милые и ручные.\nЛоточек знают на пятерку, кушают премиум корм.\nЖдут любящих и заботливых хояев. Больше фотографий отправлю в личку, цена указана за 1 котенка.",
 >       "is_published": true,
->       "category_id": 1,
->       "category": "Котики",
+>       "category": 1,
 >       "image": "/media/img/pic1.jpg"
 >    }
 > ```
 
 > **Объявление с указанным ID в html**
->> `GET /ad/html/id/`
+>> `GET /ads/html/id/`
 
 
 > **Добавить объявление**
->> `POST /ad/`
+>> `POST /ads/`
 > ```json
 >    {
 >       "name": "Сибирская котята, 3 месяца",
->       "author_id": 1,
->       "author": "Павел",
+>       "author": 1,
 >       "price": 2500,
 >       "description": "Продаю сибирских котят, возвраст 3 месяца.\nОчень милые и ручные.\nЛоточек знают на пятерку, кушают премиум корм.\nЖдут любящих и заботливых хояев. Больше фотографий отправлю в личку, цена указана за 1 котенка.",
 >       "is_published": true,
->       "category_id": 1,
->       "category": "Котики",
->       "image": "No picture yet"
+>       "category": 1,
+>       "image": null
 >    }
 > ```
 
@@ -148,13 +140,11 @@ URLS realized:
 > ```json
 >    {
 >       "name": "Сибирская котята, 3 месяца",
->       "author_id": 1,
->       "author": "Павел",
+>       "author": 1,
 >       "price": 2500,
 >       "description": "Продаю сибирских котят, возвраст 3 месяца.\nОчень милые и ручные.\nЛоточек знают на пятерку, кушают премиум корм.\nЖдут любящих и заботливых хояев. Больше фотографий отправлю в личку, цена указана за 1 котенка.",
 >       "is_published": true,
->       "category_id": 1,
->       "category": "Котики",
+>       "category": 1,
 >       "image": "/media/img/new.jpg"
 >    }
 > ```
@@ -286,7 +276,7 @@ URLS realized:
 > ```
 
 > **Локация с указанным ID**
->> `GET /users/id/`
+>> `GET /locations/id/`
 > ```json
 > {
 >    "id": 1,
@@ -304,6 +294,22 @@ URLS realized:
 >> `DELETE /locations/id/delete`
 
 
+> **Cписок всех подборок (возможна пагинация)**
+>> `GET /selections/`
+
+> **Подборка с указанным ID**
+>> `GET /selections/id/`
+
+> **Добавить подборку**
+>> `POST /selections/create`
+
+> **Изменить подборку**
+>> `PATCH /selections/id/update`
+
+> **Удалить подборку**
+>> `DELETE /selections/id/delete`
+
+
 
 Database connection and data loading
 ------------
@@ -314,5 +320,4 @@ Dependencies
 ------------
 
 1. Django
-2. Pydantic
-3. psycopg2
+2. psycopg2

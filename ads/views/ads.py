@@ -86,7 +86,7 @@ class AdImageUpdateView(UpdateView):
     model = Ad
     fields = ["image"]
 
-    def post(self, request, *args, **kwargs):  # POST ads/ad/pk/upload_image/
+    def post(self, request, *args, **kwargs):  # POST ads/pk/upload_image/
         """ads/updates an image for the specified ad"""
 
         obj = self.get_object()
@@ -99,12 +99,12 @@ class AdImageUpdateView(UpdateView):
 @method_decorator(csrf_exempt, name="dispatch")
 class AdHTMLView(View):
     @staticmethod
-    def get(request) -> HttpResponse:  # GET ads/ad/html/
+    def get(request) -> HttpResponse:  # GET ads/html/
         """shows all ads using an html template"""
         res_obj = ADO.filter(name__iregex=name) if (name := request.GET.get("name", None)) else ADO.all()
         return render(request, "ads_list.html", {"ads": res_obj})
 
 
 # shows an ad using an html template
-class AdHTMLDetailView(DetailView):  # GET ads/ad/html/pk/
+class AdHTMLDetailView(DetailView):  # GET ads/html/pk/
     model = Ad

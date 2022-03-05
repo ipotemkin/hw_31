@@ -6,7 +6,7 @@ from rest_framework.generics import (
     DestroyAPIView,
     UpdateAPIView
 )
-from rest_framework.permissions import IsAuthenticated
+# from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from ads.models import USERO, LOCO
@@ -31,9 +31,6 @@ class UserListAPIView(ListAPIView):
             for s in search:
                 query = query | Q(username__icontains=s) if query else Q(username__icontains=s)
             self.queryset = self.queryset.filter(query)
-
-        # if order := request.GET.get('ordering'):  # for sorting records retrieved
-        #     self.queryset = self.queryset.order_by(order)
 
         return super().list(request, *args, **kwargs)
 

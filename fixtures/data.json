@@ -1,9 +1,335 @@
 [
 {
+  "model": "ads.location",
+  "pk": 1,
+  "fields": {
+    "name": "Москва"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 2,
+  "fields": {
+    "name": "Ленинский проспект"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 3,
+  "fields": {
+    "name": "ЮЗАО"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 4,
+  "fields": {
+    "name": "Свиблово"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 5,
+  "fields": {
+    "name": "Лениниский просп."
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 6,
+  "fields": {
+    "name": "Омск"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 7,
+  "fields": {
+    "name": "Новосибирск"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 8,
+  "fields": {
+    "name": "Тюмень"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 9,
+  "fields": {
+    "name": "Салехард"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 10,
+  "fields": {
+    "name": "Ростов"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 16,
+  "fields": {
+    "name": "Томск"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 17,
+  "fields": {
+    "name": "Красноярск"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 19,
+  "fields": {
+    "name": "Липецк"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 20,
+  "fields": {
+    "name": "Питер"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 21,
+  "fields": {
+    "name": "Саратов"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 22,
+  "fields": {
+    "name": "Ковров"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 23,
+  "fields": {
+    "name": "Владимир"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 24,
+  "fields": {
+    "name": "Муром"
+  }
+},
+{
+  "model": "ads.location",
+  "pk": 25,
+  "fields": {
+    "name": "Саиблово"
+  }
+},
+{
+  "model": "ads.user",
+  "pk": 1,
+  "fields": {
+    "password": "password",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Петр",
+    "first_name": "Петр",
+    "last_name": "Петров",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2022-03-04T11:01:45.387Z",
+    "role": "user",
+    "age": null,
+    "groups": [],
+    "user_permissions": [],
+    "locations": [
+      2,
+      1
+    ]
+  }
+},
+{
+  "model": "ads.user",
+  "pk": 5,
+  "fields": {
+    "password": "password",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Ирина",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2022-03-04T11:01:45.387Z",
+    "role": "user",
+    "age": 17,
+    "groups": [],
+    "user_permissions": [],
+    "locations": [
+      1,
+      25
+    ]
+  }
+},
+{
+  "model": "ads.user",
+  "pk": 49,
+  "fields": {
+    "password": "pbkdf2_sha256$320000$GIm8DNodDJN1KKPCnccwVm$2p7skLYIm3q+OkOglKOC6PhKcsQFfcPPUiC5cBVB2BQ=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "igor",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2022-03-04T11:04:21.225Z",
+    "role": "user",
+    "age": null,
+    "groups": [],
+    "user_permissions": [],
+    "locations": []
+  }
+},
+{
+  "model": "ads.user",
+  "pk": 50,
+  "fields": {
+    "password": "pbkdf2_sha256$320000$jiBUcXPWffqWfmwVCohQIT$bTpI+MRlFAPMtITj+S4u+A3MCM6/F52yb33BzyIDQ84=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "igor2",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2022-03-04T11:07:43.208Z",
+    "role": "user",
+    "age": null,
+    "groups": [],
+    "user_permissions": [],
+    "locations": []
+  }
+},
+{
+  "model": "ads.user",
+  "pk": 51,
+  "fields": {
+    "password": "pbkdf2_sha256$320000$HGA7YCs3TPQ3Yn9yHhaQfB$+KU29UzKm7vQrovcn8X+7hLqTIBBM+CjA4UIkIZ7EZA=",
+    "last_login": "2022-03-04T12:32:24Z",
+    "is_superuser": true,
+    "username": "igor3",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2022-03-04T11:09:20Z",
+    "role": "admin",
+    "age": null,
+    "groups": [],
+    "user_permissions": [],
+    "locations": [
+      1
+    ]
+  }
+},
+{
+  "model": "ads.user",
+  "pk": 52,
+  "fields": {
+    "password": "pbkdf2_sha256$320000$uG3tbOKWgrgIxqjEwvpCYb$n3A2GZSOU/Usb4w0dScfPE8AGLjzgNemTCXn29Ukb7A=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Mike",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2022-03-04T11:53:33.880Z",
+    "role": "user",
+    "age": null,
+    "groups": [],
+    "user_permissions": [],
+    "locations": [
+      23,
+      1
+    ]
+  }
+},
+{
+  "model": "ads.cat",
+  "pk": 1,
+  "fields": {
+    "name": "Котики"
+  }
+},
+{
+  "model": "ads.cat",
+  "pk": 2,
+  "fields": {
+    "name": "Песики"
+  }
+},
+{
+  "model": "ads.cat",
+  "pk": 3,
+  "fields": {
+    "name": "Книги"
+  }
+},
+{
+  "model": "ads.cat",
+  "pk": 4,
+  "fields": {
+    "name": "Растения"
+  }
+},
+{
+  "model": "ads.cat",
+  "pk": 5,
+  "fields": {
+    "name": "Мебель и интерьер"
+  }
+},
+{
+  "model": "ads.cat",
+  "pk": 6,
+  "fields": {
+    "name": "Кухня"
+  }
+},
+{
+  "model": "ads.cat",
+  "pk": 7,
+  "fields": {
+    "name": "Разное"
+  }
+},
+{
+  "model": "ads.cat",
+  "pk": 8,
+  "fields": {
+    "name": "Велосипеды"
+  }
+},
+{
   "model": "ads.ad",
   "pk": 1,
   "fields": {
-    "name": "Сибирские котята, 3 месяца",
+    "name": "test selection 15",
     "author": 1,
     "price": 3100,
     "description": "Продаю сибирских котят, возвраст 3 месяца.Очень милые и ручные.Лоточек знают на пятерку, кушают премиум корм.Ждут любящих и заботливых хояев. Больше фотографий отправлю в личку, цена указана за 1 котенка.",
@@ -222,19 +548,6 @@
 },
 {
   "model": "ads.ad",
-  "pk": 18,
-  "fields": {
-    "name": "Стол лофт большой",
-    "author": 1,
-    "price": 13800,
-    "description": "Стол отлично подойдёт как под обеденный так и для переговоров, размер 200/100 см, высота стандартная 75 см. Выполнен из массива сосны. Можно сделать также из ясеня, дуба.",
-    "is_published": true,
-    "category": 5,
-    "image": "img/lui-peng-8NxTrV6i4WQ-unsplash.jpg"
-  }
-},
-{
-  "model": "ads.ad",
   "pk": 19,
   "fields": {
     "name": "Стол прямой прям хороший",
@@ -299,172 +612,29 @@
   }
 },
 {
-  "model": "ads.cat",
-  "pk": 1,
+  "model": "ads.ad",
+  "pk": 26,
   "fields": {
-    "name": "Котики"
+    "name": "Тачка",
+    "author": 1,
+    "price": 5000,
+    "description": null,
+    "is_published": false,
+    "category": 1,
+    "image": ""
   }
 },
 {
-  "model": "ads.cat",
-  "pk": 2,
+  "model": "ads.ad",
+  "pk": 29,
   "fields": {
-    "name": "Песики"
-  }
-},
-{
-  "model": "ads.cat",
-  "pk": 3,
-  "fields": {
-    "name": "Книги"
-  }
-},
-{
-  "model": "ads.cat",
-  "pk": 4,
-  "fields": {
-    "name": "Растения"
-  }
-},
-{
-  "model": "ads.cat",
-  "pk": 5,
-  "fields": {
-    "name": "Мебель и интерьер"
-  }
-},
-{
-  "model": "ads.cat",
-  "pk": 6,
-  "fields": {
-    "name": "Кухня"
-  }
-},
-{
-  "model": "ads.cat",
-  "pk": 7,
-  "fields": {
-    "name": "Разное"
-  }
-},
-{
-  "model": "ads.cat",
-  "pk": 8,
-  "fields": {
-    "name": "Велосипеды"
-  }
-},
-{
-  "model": "ads.location",
-  "pk": 1,
-  "fields": {
-    "name": "Москва"
-  }
-},
-{
-  "model": "ads.location",
-  "pk": 2,
-  "fields": {
-    "name": "Ленинский проспект"
-  }
-},
-{
-  "model": "ads.location",
-  "pk": 3,
-  "fields": {
-    "name": "ЮЗАО"
-  }
-},
-{
-  "model": "ads.location",
-  "pk": 4,
-  "fields": {
-    "name": "Свиблово"
-  }
-},
-{
-  "model": "ads.location",
-  "pk": 5,
-  "fields": {
-    "name": "Лениниский просп."
-  }
-},
-{
-  "model": "ads.location",
-  "pk": 6,
-  "fields": {
-    "name": "Омск"
-  }
-},
-{
-  "model": "ads.user",
-  "pk": 1,
-  "fields": {
-    "username": "Петр",
-    "first_name": "Петр",
-    "last_name": "Петров",
-    "role": "user",
-    "age": null,
-    "locations": [
-      2,
-      1
-    ]
-  }
-},
-{
-  "model": "ads.user",
-  "pk": 2,
-  "fields": {
-    "username": "Иван",
-    "first_name": null,
-    "last_name": null,
-    "role": null,
-    "age": 21,
-    "locations": [
-      1
-    ]
-  }
-},
-{
-  "model": "ads.user",
-  "pk": 3,
-  "fields": {
-    "username": "Сергей",
-    "first_name": null,
-    "last_name": null,
-    "role": null,
-    "age": 35,
-    "locations": [
-      1,
-      3
-    ]
-  }
-},
-{
-  "model": "ads.user",
-  "pk": 4,
-  "fields": {
-    "username": "Светлана",
-    "first_name": null,
-    "last_name": null,
-    "role": null,
-    "age": 19,
-    "locations": []
-  }
-},
-{
-  "model": "ads.user",
-  "pk": 5,
-  "fields": {
-    "username": "Ирина",
-    "first_name": null,
-    "last_name": null,
-    "role": null,
-    "age": 17,
-    "locations": [
-      1,
-      4
-    ]
+    "name": "29 update",
+    "author": 52,
+    "price": 100,
+    "description": null,
+    "is_published": false,
+    "category": 1,
+    "image": ""
   }
 }
 ]
