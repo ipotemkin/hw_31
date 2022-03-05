@@ -3,3 +3,6 @@ lesson27_project_source
 __pycache__
 *backup*
 .DS_Store
+.dockerignore
+docker-compose.yaml
+Dockerfile
