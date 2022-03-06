@@ -42,7 +42,6 @@ def build_query(request):
         query &= Q(price__lte=search_price_to)
 
     if username := request.GET.get('username'):
-        print(username)
         query &= Q(author__username__icontains=username)
 
     return query
