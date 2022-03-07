@@ -15,7 +15,7 @@ from rest_framework.generics import (
 from rest_framework.permissions import IsAuthenticated
 from ads.models import Ad, ADO
 from ads.permissions import AdUpdateDeletePermission
-from ads.serializers import AdSerializer
+from ads.serializers import AdSerializer, AdCreateSerializer
 
 
 def index(request):  # noqa
@@ -66,6 +66,10 @@ class AdListCreateAPIView(ListCreateAPIView):
                     .distinct()
             )
         return super().get(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = AdCreateSerializer
+        return super().create(request, *args, **kwargs)
 
 
 class AdUpdateAPIView(UpdateAPIView):

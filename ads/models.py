@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.core.validators import MinValueValidator, MinLengthValidator
 
@@ -15,6 +16,15 @@ class Location(models.Model):
         ordering = ["name"]
 
 
+def check_domain(value: str):
+    domain = value.split("@")[2].lower()
+    if domain == "rambler.ru":
+        raise ValidationError(
+            'Domain rambler.ru forbidden',
+            params={'value': value},
+        )
+
+
 class User(AbstractUser):
 
     USER = "user"
@@ -23,11 +33,13 @@ class User(AbstractUser):
     ROLES = [(USER, "Пользователь"), (ADMIN, "Администратор")]
 
     role = models.CharField(max_length=5, choices=ROLES, default=USER, verbose_name="Роль")
-    age = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="Возраст")
+    # age = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="Возраст")
+    birth_date = models.DateField(null=True, verbose_name="Дата рождения")
+    # email = models.EmailField(blank=True, validators=[check_domain], verbose_name="Email")
     locations = models.ManyToManyField(Location)
 
     def __str__(self):
-        return self.username
+        return f"{self.username}: {self.email}"
 
     class Meta:
         verbose_name_plural = "Пользователи"
@@ -45,6 +57,14 @@ class Cat(models.Model):
         verbose_name_plural = "Категории"
         verbose_name = "Категория"
         ordering = ["name"]
+
+
+def check_false(value: bool):
+    if value:
+        raise ValidationError(
+            'Needed True',
+            params={'value': value},
+        )
 
 
 class Ad(models.Model):
