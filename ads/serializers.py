@@ -1,18 +1,8 @@
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from ads.models import User, Ad, Cat, Location, LOCO, Selection
-
-
-def check_false(value: bool):
-    if value:
-        raise ValidationError(
-            'Needed False',
-            params={'value': value},
-        )
+from ads.validators import check_false, check_age
 
 
 class AdSerializer(serializers.ModelSerializer):
@@ -54,17 +44,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-def check_age(value: datetime.date):
-    delta = relativedelta(datetime.utcnow().date(), value)
-    if delta.years < 9:
-        raise ValidationError(
-            'Age should be more than 9 years',
-            params={'value': value},
-        )
-
-
 class UserCreateUpdateSerializer(serializers.ModelSerializer):
-    birth_date = serializers.DateField(validators=[check_age])
+    birth_date = serializers.DateField(required=False, validators=[check_age])
     locations = serializers.SlugRelatedField(
         required=False,
         many=True,
@@ -98,14 +79,6 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
         user.set_password(user.password)
         user.save()
         return user
-
-
-# class UserCreateSerializer(UserCreateUpdateBaseSerializer):
-#     birth_date = serializers.DateField(validators=[is_required_age])
-#
-#
-# class UserUpdateSerializer(UserCreateUpdateBaseSerializer):
-#     birth_date = serializers.DateField(validators=[is_required_age])
 
 
 class SelectionSerializer(serializers.ModelSerializer):
