@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.validators import MinValueValidator, MinLengthValidator
 
 
 class Location(models.Model):
@@ -47,7 +48,7 @@ class Cat(models.Model):
 
 
 class Ad(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Объявление")
+    name = models.CharField(max_length=100, validators=[MinLengthValidator(10)], verbose_name="Объявление")
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор")
     price = models.PositiveIntegerField(verbose_name="Цена")
     description = models.CharField(max_length=1000, verbose_name="Описание", null=True, blank=True)
@@ -66,7 +67,7 @@ class Ad(models.Model):
 
 class Selection(models.Model):
     name = models.CharField(max_length=30)
-    owner = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Автор объявления")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор объявления")
     items = models.ManyToManyField(Ad)
 
     def __str__(self):
