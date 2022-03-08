@@ -1,7 +1,9 @@
 from django.db.models import Q
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from ads.models import USERO, LOCO
+from ads.permissions import IsAdmin, IsSelf
 from ads.serializers import LocSerializer, UserSerializer, UserCreateUpdateSerializer
 
 
@@ -32,3 +34,9 @@ class UserViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs):
         self.serializer_class = UserCreateUpdateSerializer
         return super().update(request, *args, **kwargs)
+
+    def get_permissions(self):
+        permissions = []
+        if self.action in ("update", "partial_update", "destroy"):
+            permissions = (IsAuthenticated & (IsAdmin | IsSelf),)
+        return [permission() for permission in permissions]

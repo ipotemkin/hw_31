@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from ads.models import User, Ad, Cat, Location, LOCO, Selection
@@ -61,10 +61,10 @@ class AdSerializer(serializers.ModelSerializer):
         model = Ad
         fields = "__all__"
 
-    def create(self, validated_data):
-        if value := validated_data.get("is_published", False):
-            raise ValidationError('is_published should be False', params={'value': value})
-        return super().create(validated_data)
+    # def create(self, validated_data):
+    #     if value := validated_data.get("is_published", False):
+    #         raise ValidationError('is_published should be False', params={'value': value})
+    #     return super().create(validated_data)
 
 
 class AdCreateSerializer(AdSerializer):
