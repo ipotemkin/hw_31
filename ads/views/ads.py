@@ -61,21 +61,28 @@ class AdImageUpdateView(UpdateView):
 class AdHTMLView(View):
     @staticmethod
     def get(request) -> HttpResponse:  # GET ads/html/
-        """shows all ads using an html template"""
+        """shows all ads using an HTML template"""
+
         res_obj = ADO.filter(name__iregex=name) if (name := request.GET.get("name", None)) else ADO.all()
         return render(request, "ads_list.html", {"ads": res_obj})
 
 
 # shows an ad using an html template
 class AdHTMLDetailView(DetailView):  # GET ads/html/pk/
+    """shows an ad with the specified pk using an HTML template"""
+
     model = Ad
 
 
 class AdViewSet(ModelViewSet):
+    """views for ads"""
+
     queryset = ADO.all()
     serializer_class = AdSerializer
 
     def list(self, request, *args, **kwargs):
+        """shows a list of ads"""
+
         if query := build_query(request):
             self.queryset = (
                 self.get_queryset()
@@ -86,10 +93,14 @@ class AdViewSet(ModelViewSet):
         return super().list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
+        """creates an ad"""
+
         self.serializer_class = AdCreateSerializer
         return super().create(request, *args, **kwargs)
 
     def get_permissions(self):
+        """sets permissions for ads' views"""
+
         permissions = []
         if self.action == "retrieve":
             permissions = (IsAuthenticated,)

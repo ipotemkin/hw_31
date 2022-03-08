@@ -48,6 +48,8 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
         return self._create_update_locations(user)
 
     def save(self):
+        """sets a hashed password"""
+
         user = super().save()
         user.set_password(user.password)
         user.save()

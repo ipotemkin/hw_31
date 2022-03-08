@@ -8,11 +8,15 @@ from ads.serializers import LocSerializer, UserSerializer, UserCreateUpdateSeria
 
 
 class LocAPIViewSet(ModelViewSet):
+    """locations' views"""
+
     queryset = LOCO.all()
     serializer_class = LocSerializer
 
 
 class UserViewSet(ModelViewSet):
+    """users' views"""
+
     queryset = USERO.all()
     serializer_class = UserSerializer
 
@@ -28,14 +32,20 @@ class UserViewSet(ModelViewSet):
         return super().list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
+        """creates a user and adds/creates his location(s)"""
+
         self.serializer_class = UserCreateUpdateSerializer
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
+        """partially updates a user and adds/creates his location(s)"""
+
         self.serializer_class = UserCreateUpdateSerializer
         return super().update(request, *args, **kwargs)
 
     def get_permissions(self):
+        """sets permissions for users' views"""
+
         permissions = []
         if self.action in ("update", "partial_update", "destroy"):
             permissions = (IsAuthenticated & (IsAdmin | IsSelf),)
