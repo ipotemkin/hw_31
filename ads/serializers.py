@@ -5,33 +5,6 @@ from ads.models import User, Ad, Cat, Location, LOCO, Selection
 from ads.validators import check_false, check_age
 
 
-class AdSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ad
-        fields = "__all__"
-
-    def create(self, validated_data):
-        if value := validated_data.get("is_published", False):
-            raise ValidationError('is_published should be False', params={'value': value})
-        return super().create(validated_data)
-
-
-class AdCreateSerializer(AdSerializer):
-    is_published = serializers.BooleanField(required=False, validators=[check_false])
-
-
-class CatSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Cat
-        fields = "__all__"
-
-
-class LocSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Location
-        fields = ["name"]
-
-
 class UserSerializer(serializers.ModelSerializer):
     locations = serializers.SlugRelatedField(
         many=True,
@@ -79,6 +52,35 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
         user.set_password(user.password)
         user.save()
         return user
+
+
+class AdSerializer(serializers.ModelSerializer):
+    # author = UserSerializer()
+
+    class Meta:
+        model = Ad
+        fields = "__all__"
+
+    def create(self, validated_data):
+        if value := validated_data.get("is_published", False):
+            raise ValidationError('is_published should be False', params={'value': value})
+        return super().create(validated_data)
+
+
+class AdCreateSerializer(AdSerializer):
+    is_published = serializers.BooleanField(required=False, validators=[check_false])
+
+
+class CatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cat
+        fields = "__all__"
+
+
+class LocSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = ["name"]
 
 
 class SelectionSerializer(serializers.ModelSerializer):

@@ -6,13 +6,15 @@ from django.urls import path, include
 
 router = DefaultRouter()  # SimpleRouter
 router.register('cats', categories.CatAPIViewSet)
+router.register('ads', ads.AdViewSet)
+
 urlpatterns = [
     # ad
-    path("ads/<int:pk>/update/", ads.AdUpdateAPIView.as_view()),
-    path("ads/<int:pk>/delete/", ads.AdDeleteAPIView.as_view()),
+    # path("ads/<int:pk>/update/", ads.AdUpdateAPIView.as_view()),
+    # path("ads/<int:pk>/delete/", ads.AdDeleteAPIView.as_view()),
     path("ads/<int:pk>/upload_image", ads.AdImageUpdateView.as_view()),
-    path("ads/<int:pk>/", ads.AdAPIView.as_view()),
-    path("ads/", ads.AdListCreateAPIView.as_view()),
+    # path("ads/<int:pk>/", ads.AdAPIView.as_view()),
+    # path("ads/", ads.AdListCreateAPIView.as_view()),
 
     # categories & locations
     path("", include(router.urls)),
