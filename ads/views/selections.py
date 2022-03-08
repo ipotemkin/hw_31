@@ -19,7 +19,7 @@ class SelectionViewSet(ModelViewSet):
         return super().list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        request.data['owner'] = request.user.id
+        request.data["owner"] = request.user.id
         return super().create(request, *args, **kwargs)
 
     def get_permissions(self):

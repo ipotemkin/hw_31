@@ -12,7 +12,6 @@ from rest_framework.viewsets import ModelViewSet
 from ads.models import Ad, ADO
 from ads.permissions import IsAdmin, IsAuthor
 from ads.serializers import AdSerializer, AdCreateSerializer
-# from ads.validators import method_permission_classes
 
 
 def index(request):  # noqa
