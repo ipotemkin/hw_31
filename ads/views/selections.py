@@ -1,49 +1,9 @@
-# from rest_framework.generics import (
-#     RetrieveAPIView,
-#     UpdateAPIView,
-#     DestroyAPIView,
-#     ListAPIView,
-#     CreateAPIView
-# )
-
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from ads.models import SELO
 from ads.permissions import IsOwner
 from ads.serializers import SelectionSerializer, SelectionDetailSerializer, SelectionListSerializer
-from ads.validators import method_permission_classes
-
-# class SelectionAPIView(RetrieveAPIView):
-#     queryset = SELO.all()
-#     serializer_class = SelectionDetailSerializer
-
-
-# class SelectionListAPIView(ListAPIView):
-#     queryset = SELO.all()
-#     serializer_class = SelectionListSerializer
-
-
-# class SelectionCreateAPIView(CreateAPIView):
-#     queryset = SELO.all()
-#     serializer_class = SelectionSerializer
-#     permission_classes = [IsAuthenticated]
-#
-#     def post(self, request, *args, **kwargs):
-#         request.data['owner'] = request.user.id
-#         return super().post(request, *args, **kwargs)
-
-
-# class SelectionUpdateAPIView(UpdateAPIView):
-#     queryset = SELO.all()
-#     serializer_class = SelectionSerializer
-#     permission_classes = [IsAuthenticated, IsOwner]
-#
-#
-# class SelectionDeleteAPIView(DestroyAPIView):
-#     queryset = SELO.all()
-#     serializer_class = SelectionSerializer
-#     permission_classes = [IsAuthenticated, IsOwner]
 
 
 class SelectionViewSet(ModelViewSet):
@@ -58,18 +18,9 @@ class SelectionViewSet(ModelViewSet):
         self.serializer_class = SelectionListSerializer
         return super().list(request, *args, **kwargs)
 
-    # @method_permission_classes([IsAuthenticated])
     def create(self, request, *args, **kwargs):
         request.data['owner'] = request.user.id
         return super().create(request, *args, **kwargs)
-
-    # @method_permission_classes([IsAuthenticated, IsOwner])
-    # def update(self, request, *args, **kwargs):
-    #     return super().update(request, *args, **kwargs)
-    #
-    # @method_permission_classes([IsAuthenticated, IsOwner])
-    # def destroy(self, request, *args, **kwargs):
-    #     return super().destroy(request, *args, **kwargs)
 
     def get_permissions(self):
         permissions = []

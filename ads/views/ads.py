@@ -5,18 +5,12 @@ from django.views import View
 from django.views.generic import DetailView, UpdateView
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-# from rest_framework.generics import (
-#     RetrieveAPIView,
-#     UpdateAPIView,
-#     DestroyAPIView,
-#     ListCreateAPIView
-# )
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from ads.models import Ad, ADO
-from ads.permissions import AdUpdateDeletePermission
+from ads.permissions import AdUpdateDeletePermission, IsOwner, IsAdmin, IsAuthor
 from ads.serializers import AdSerializer, AdCreateSerializer
 from ads.validators import method_permission_classes
 
@@ -48,43 +42,6 @@ def build_query(request):
         query &= Q(author__username__icontains=username)
 
     return query
-
-
-# class AdAPIView(RetrieveAPIView):
-#     queryset = ADO.all()
-#     serializer_class = AdSerializer
-#     permission_classes = [IsAuthenticated]
-#
-#
-# class AdListCreateAPIView(ListCreateAPIView):
-#     queryset = ADO.all()
-#     serializer_class = AdSerializer
-#
-#     def get(self, request, *args, **kwargs):
-#         if query := build_query(request):
-#             self.queryset = (
-#                 self.get_queryset()
-#                     .select_related("author", "category")
-#                     .filter(query)
-#                     .distinct()
-#             )
-#         return super().get(request, *args, **kwargs)
-#
-#     def create(self, request, *args, **kwargs):
-#         self.serializer_class = AdCreateSerializer
-#         return super().create(request, *args, **kwargs)
-#
-#
-# class AdUpdateAPIView(UpdateAPIView):
-#     queryset = ADO.all()
-#     serializer_class = AdSerializer
-#     permission_classes = [IsAuthenticated, AdUpdateDeletePermission]
-#
-#
-# class AdDeleteAPIView(DestroyAPIView):
-#     queryset = ADO.all()
-#     serializer_class = AdSerializer
-#     permission_classes = [IsAuthenticated, AdUpdateDeletePermission]
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -119,9 +76,9 @@ class AdViewSet(ModelViewSet):
     queryset = ADO.all()
     serializer_class = AdSerializer
 
-    @method_permission_classes([IsAuthenticated])
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+    # @method_permission_classes([IsAuthenticated])
+    # def retrieve(self, request, *args, **kwargs):
+    #     return super().retrieve(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
         if query := build_query(request):
@@ -137,10 +94,20 @@ class AdViewSet(ModelViewSet):
         self.serializer_class = AdCreateSerializer
         return super().create(request, *args, **kwargs)
 
-    @method_permission_classes([IsAuthenticated, AdUpdateDeletePermission])
-    def update(self, request, *args, **kwargs):
-        return super().update(request, *args, **kwargs)
+    # @method_permission_classes([IsAuthenticated, AdUpdateDeletePermission])
+    # def update(self, request, *args, **kwargs):
+    #     return super().update(request, *args, **kwargs)
 
-    @method_permission_classes([IsAuthenticated, AdUpdateDeletePermission])
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(request, *args, **kwargs)
+    # @method_permission_classes([IsAuthenticated, AdUpdateDeletePermission])
+    # def destroy(self, request, *args, **kwargs):
+    #     return super().destroy(request, *args, **kwargs)
+
+    def get_permissions(self):
+        permissions = []
+        print(self.action)
+        if self.action == "retrieve":
+            permissions = (IsAuthenticated,)
+        elif self.action in ("update", "partial_update", "destroy"):
+            # permissions = (IsAuthenticated & AdUpdateDeletePermission,)
+            permissions = (IsAdmin | IsAuthor,)
+        return [permission() for permission in permissions]
