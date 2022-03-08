@@ -8,6 +8,7 @@ router = DefaultRouter()  # SimpleRouter
 router.register('cats', categories.CatAPIViewSet)
 router.register('ads', ads.AdViewSet)
 router.register('selections', selections.SelectionViewSet)
+router.register('users', users.UserViewSet)
 
 urlpatterns = [
     # ad
@@ -21,13 +22,13 @@ urlpatterns = [
     path("", include(router.urls)),
 
     # user
-    path("users/create/", users.UserCreateAPIView.as_view(), name="api_users_create"),
-    path("users/<int:pk>/delete/", users.UserDeleteAPIView.as_view(), name="api_users_delete"),
-    path("users/<int:pk>/update/", users.UserUpdateAPIView.as_view(), name="api_users_update"),
-    path("users/<int:pk>/", users.UserAPIView.as_view(), name="api_users"),
+    # path("users/create/", users.UserCreateAPIView.as_view(), name="api_users_create"),
+    # path("users/<int:pk>/delete/", users.UserDeleteAPIView.as_view(), name="api_users_delete"),
+    # path("users/<int:pk>/update/", users.UserUpdateAPIView.as_view(), name="api_users_update"),
+    # path("users/<int:pk>/", users.UserAPIView.as_view(), name="api_users"),
     path("users/token/refresh/", TokenRefreshView.as_view()),
     path("users/token/", TokenObtainPairView.as_view()),
-    path("users/", users.UserListAPIView.as_view(), name="api_users_all"),
+    # path("users/", users.UserListAPIView.as_view(), name="api_users_all"),
 
     # selections
     # path("selections/create/", selections.SelectionCreateAPIView.as_view()),
