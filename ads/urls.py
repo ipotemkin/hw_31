@@ -7,6 +7,7 @@ from django.urls import path, include
 router = DefaultRouter()  # SimpleRouter
 router.register('cats', categories.CatAPIViewSet)
 router.register('ads', ads.AdViewSet)
+router.register('selections', selections.SelectionViewSet)
 
 urlpatterns = [
     # ad
@@ -29,11 +30,11 @@ urlpatterns = [
     path("users/", users.UserListAPIView.as_view(), name="api_users_all"),
 
     # selections
-    path("selections/create/", selections.SelectionCreateAPIView.as_view()),
-    path("selections/<int:pk>/update/", selections.SelectionUpdateAPIView.as_view()),
-    path("selections/<int:pk>/delete/", selections.SelectionDeleteAPIView.as_view()),
-    path("selections/<int:pk>/", selections.SelectionAPIView.as_view()),
-    path("selections/", selections.SelectionListAPIView.as_view()),
+    # path("selections/create/", selections.SelectionCreateAPIView.as_view()),
+    # path("selections/<int:pk>/update/", selections.SelectionUpdateAPIView.as_view()),
+    # path("selections/<int:pk>/delete/", selections.SelectionDeleteAPIView.as_view()),
+    # path("selections/<int:pk>/", selections.SelectionAPIView.as_view()),
+    # path("selections/", selections.SelectionListAPIView.as_view()),
 
     # additional urls
     path("ads/html/<int:pk>/", ads.AdHTMLDetailView.as_view(), name="ad_http_detail"),

@@ -10,7 +10,7 @@ class AdUpdateDeletePermission(permissions.BasePermission):
         return request.user.role == User.ADMIN or request.user.id == view.get_object().author.id
 
 
-class SelectionUpdateDeletePermission(permissions.BasePermission):
+class IsOwner(permissions.BasePermission):
     message = 'Allowed only for the author'
 
     def has_permission(self, request, view):
