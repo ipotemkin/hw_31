@@ -1,4 +1,4 @@
-# from django.core.exceptions import ValidationError
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from ads.models import User, Ad, Cat, Location, LOCO, Selection
@@ -40,20 +40,37 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
         return user
 
     def create(self, validated_data):
-        user = super().create(validated_data)
+        user = super().create(
+            self._hash_password_in_validated_data(validated_data)
+        )
         return self._create_update_locations(user)
 
     def update(self, instance, validated_data):
-        user = super().update(instance, validated_data)
+        user = super().update(
+            instance,
+            self._hash_password_in_validated_data(validated_data)
+        )
         return self._create_update_locations(user)
 
-    def save(self):
-        """sets a hashed password"""
+    @staticmethod
+    def _hash_password_in_validated_data(validated_data):
+        """
+        hashes the user's password in validated_data
+        alternative way through .save() (look beneath) doesn't work properly
+        because it rewrites the password while updating a user's record
+        """
 
-        user = super().save()
-        user.set_password(user.password)
-        user.save()
-        return user
+        if password := validated_data.get('password', None):
+            validated_data["password"] = make_password(password)
+        return validated_data
+
+    # def save(self):
+    #     """sets a hashed password"""
+    #
+    #     user = super().save()
+    #     user.set_password(user.password)
+    #     user.save()
+    #     return user
 
 
 class AdSerializer(serializers.ModelSerializer):
