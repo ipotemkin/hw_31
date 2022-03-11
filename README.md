@@ -119,7 +119,7 @@ URLS realized:
 
 
 > **Изменить объявление**
->> `PATCH /ad/id/update/`
+>> `PATCH /ads/id/`
 > ```json
 >    {
 >       "name": "Сибирская котята, 3 месяца",
@@ -135,7 +135,7 @@ URLS realized:
 > ```
 
 > **Добавить/обновить картинку в объявление**
->> `POST /ad/id/upload_image/`  
+>> `POST /ads/id/upload_image/`  
 > `ContentType 'multipart/form-data'`  
 > `FILES: "image"`
 > ```json
@@ -151,7 +151,7 @@ URLS realized:
 > ```
 
 > **Удалить объявление**
->> `DELETE /ad/id/delete/`
+>> `DELETE /ads/id/`
 
 > **Cписок всех категорий**
 >> `GET /cats/`  
@@ -193,7 +193,7 @@ URLS realized:
 
 
 > **Изменить категорию**
->> `PATCH /cats/id/update`
+>> `PATCH /cats/id/`
 > ```json
 >    {
 >        "name": "Котики"
@@ -201,7 +201,7 @@ URLS realized:
 > ```
 
 > **Удалить категорию**
->> `DELETE /cats/id/delete`
+>> `DELETE /cats/id/`
 
 
 > **Cписок всех пользователей (возможна пагинация)**
@@ -252,13 +252,13 @@ URLS realized:
 > ```
 
 > **Добавить пользователя**
->> `POST /users/create`
+>> `POST /users/`
 
 > **Изменить пользователя**
->> `PATCH /users/id/update`
+>> `PATCH /users/id/`
 
 > **Удалить пользователя**
->> `DELETE /users/id/delete`
+>> `DELETE /users/id/`
 
 
 > **Cписок всех локаций (возможна пагинация)**
@@ -286,13 +286,13 @@ URLS realized:
 > ```
 
 > **Добавить локацию**
->> `POST /locations/create`
+>> `POST /locations/`
 
 > **Изменить локацию**
->> `PATCH /locations/id/update`
+>> `PATCH /locations/id/`
 
 > **Удалить локацию**
->> `DELETE /locations/id/delete`
+>> `DELETE /locations/id/`
 
 
 > **Cписок всех подборок (возможна пагинация)**
@@ -302,13 +302,13 @@ URLS realized:
 >> `GET /selections/id/`
 
 > **Добавить подборку**
->> `POST /selections/create`
+>> `POST /selections/`
 
 > **Изменить подборку**
->> `PATCH /selections/id/update`
+>> `PATCH /selections/id/`
 
 > **Удалить подборку**
->> `DELETE /selections/id/delete`
+>> `DELETE /selections/id/`
 
 
 
