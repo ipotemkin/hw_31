@@ -46,6 +46,7 @@ class User(AbstractUser):
 
 class Cat(models.Model):
     name = models.CharField(max_length=120, verbose_name="Категория")
+    slug = models.SlugField(max_length=10, unique=True, validators=[MinLengthValidator(5)], null=True, blank=True)
 
     def __str__(self):
         return self.name
