@@ -7,7 +7,7 @@ def user_token(client, django_user_model):
     username = "james"
     password = "james"
 
-    django_user_model.objects.create_user(
+    user = django_user_model.objects.create_user(
         username=username,
         password=password
     )
@@ -18,4 +18,4 @@ def user_token(client, django_user_model):
         format="json"
     )
 
-    return response.data["access"]
+    return response.data["access"], user.id
