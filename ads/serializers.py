@@ -64,26 +64,11 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
             validated_data["password"] = make_password(password)
         return validated_data
 
-    # def save(self):
-    #     """sets a hashed password"""
-    #
-    #     user = super().save()
-    #     user.set_password(user.password)
-    #     user.save()
-    #     return user
-
 
 class AdSerializer(serializers.ModelSerializer):
-    # author = UserSerializer()
-
     class Meta:
         model = Ad
         fields = "__all__"
-
-    # def create(self, validated_data):
-    #     if value := validated_data.get("is_published", False):
-    #         raise ValidationError('is_published should be False', params={'value': value})
-    #     return super().create(validated_data)
 
 
 class AdCreateSerializer(AdSerializer):
