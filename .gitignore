@@ -12,3 +12,5 @@ data/*
 
 test.sh
 api-run.sh
+
+.coverage

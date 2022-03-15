@@ -74,3 +74,36 @@ def test_ad_create(client, ad):
 
     assert response.status_code == 201
     assert response.data == new_ad
+
+
+@pytest.mark.django_db
+def test_ad_update(client, ad, admin_user_token):
+    token, _ = admin_user_token
+    data = dict(price=2000)
+    response = client.patch(
+        f"/ads/{ad.id}/",
+        data,
+        content_type="application/json",
+        HTTP_AUTHORIZATION="Bearer " + token
+    )
+
+    new_ad["author"] = ad.author_id
+    new_ad["category"] = ad.category_id
+    new_ad["id"] = ad.author_id
+    new_ad["price"] = 2000
+
+    assert response.status_code == 200
+    assert response.data == new_ad
+
+
+@pytest.mark.django_db
+def test_ad_delete(client, ad, admin_user_token):
+    token, _ = admin_user_token
+    response = client.delete(
+        f"/ads/{ad.id}/",
+        content_type="application/json",
+        HTTP_AUTHORIZATION="Bearer " + token
+    )
+
+    assert response.status_code == 204
+    assert response.data is None
