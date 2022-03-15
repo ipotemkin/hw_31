@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # 'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'ads',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -150,7 +151,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 
@@ -172,3 +174,9 @@ REST_FRAMEWORK = {
 # }
 
 AUTH_USER_MODEL = 'ads.User'
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'SKYVITO API',
+    'DESCRIPTION': 'Simple API on DRF',
+    'VERSION': '1.0.0',
+}
